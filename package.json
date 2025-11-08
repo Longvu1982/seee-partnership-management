@@ -1,0 +1,28 @@
+{
+  "name": "seee-partnership-management",
+  "version": "1.0.0",
+  "description": "A platform to manage shoes orders",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "server": "npm run dev -w server",
+    "frontend": "npm run dev -w frontend",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\"",
+    "build": "npm run build -w server && npm run build -w frontend",
+    "build:be": "npm run build -w server",
+    "build:fe": "npm run build -w frontend",
+    "start:prod": "concurrently \"npm run start:be\" \"npm run start:fe\"",
+    "start:be": "npm run start -w server",
+    "start:fe": "npm run preview -w frontend",
+    "generate": "npm run generate -w server"
+  },
+  "author": "Kris",
+  "license": "ISC",
+  "workspaces": [
+    "server",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.1"
+  }
+}

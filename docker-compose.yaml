@@ -1,0 +1,18 @@
+version: "1.0"
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: seee_partnership_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
+    driver: local
