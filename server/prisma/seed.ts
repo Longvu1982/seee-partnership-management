@@ -1,16 +1,18 @@
-import { DeliveryCodeStatus, OrderStatus, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { v4 as uuidv4, v4 } from 'uuid';
-import { TUserRegisterWrite } from '../src/types/general';
+// import { TUserRegisterWrite } from '../src/types/general';
 import { db } from '../src/utils/db.server';
 import { hashPassword } from './../src/utils/bcryptHandler';
 
-async function getUser(): Promise<TUserRegisterWrite> {
+async function getUser() {
   return {
     id: uuidv4(),
-    fullName: 'Phạm Quốc Việt',
+    name: 'ADMIN SEEE Khoa Điện Tử',
     email: 'example@company.com',
     phone: '',
-    adminId: '',
+    role: Role.ADMIN,
+    username: 'adminSeee1',
+    password: await hashPassword('123456789'),
   };
 }
 
@@ -73,27 +75,15 @@ async function seed() {
   // await db.source.deleteMany();
   // await db.order.deleteMany();
   // console.log('Deleted all records in related tables');
-
   // // Seed new user
-  // const user = await getUser();
-  // console.log(`[*] Seeding Admin : ${JSON.stringify(user)}`);
-  // console.log(`[*] password : pqvsneakeradmin `);
+  const user = await getUser();
+  console.log(`[*] Seeding Admin : ${JSON.stringify(user)}`);
+  console.log(`[*] password : 123456789 `);
   // const password = 'pqvsneakeradmin';
   // const hashedPassword = await hashPassword(password);
-  // await db.user.create({
-  //   data: {
-  //     ...user,
-  //     account: {
-  //       create: {
-  //         username: 'pqviet',
-  //         password: hashedPassword,
-  //         role: Role.ADMIN,
-  //         id: v4(),
-  //       },
-  //     },
-  //   },
-  // });
-
+  await db.user.create({
+    data: user,
+  });
   // await Promise.all(
   //   getShippingStores().map((store) => {
   //     console.log(`[*] Seeding Shipping Store: ${JSON.stringify(store)}`);
@@ -102,7 +92,6 @@ async function seed() {
   //     });
   //   })
   // );
-
   // await Promise.all(
   //   getSources().map((source) => {
   //     console.log(`[*] Seeding Source: ${JSON.stringify(source)}`);
@@ -114,27 +103,24 @@ async function seed() {
   //     });
   //   })
   // );
-
-  const currentAdmin = await db.user.findFirst({
-    where: {
-      account: {
-        role: Role.ADMIN,
-        username: 'pqviet',
-      },
-    },
-  });
-
-  await db.source.updateMany({
-    data: {
-      adminId: currentAdmin?.id,
-    },
-  });
-
-  await db.shippingStore.updateMany({
-    data: {
-      adminId: currentAdmin?.id,
-    },
-  });
+  // const currentAdmin = await db.user.findFirst({
+  //   where: {
+  //     account: {
+  //       role: Role.ADMIN,
+  //       username: 'pqviet',
+  //     },
+  //   },
+  // });
+  // await db.source.updateMany({
+  //   data: {
+  //     adminId: currentAdmin?.id,
+  //   },
+  // });
+  // await db.shippingStore.updateMany({
+  //   data: {
+  //     adminId: currentAdmin?.id,
+  //   },
+  // });
 }
 
 seed();

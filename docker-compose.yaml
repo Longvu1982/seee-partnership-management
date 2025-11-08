@@ -3,7 +3,7 @@ version: "1.0"
 services:
   db:
     image: postgres:13
-    container_name: postgres-container
+    container_name: seee-postgres-container
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
