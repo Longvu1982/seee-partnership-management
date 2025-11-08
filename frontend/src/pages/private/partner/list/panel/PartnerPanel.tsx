@@ -1,6 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
 import Panel from "@/components/panel/Panel";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,6 +17,8 @@ export const schema = z.object({
   name: z.string().min(1, "Tên đối tác là bắt buộc."),
   sector: z.string().optional(),
   address: z.string().optional(),
+  description: z.string().optional(),
+  type: z.string().optional(),
   id: z.string().optional(),
 });
 
@@ -25,6 +26,8 @@ export const initFormValues = {
   name: "",
   sector: "",
   address: "",
+  description: "",
+  type: "",
 };
 
 interface PartnerPanelProps {
@@ -56,7 +59,7 @@ const PartnerPanel = ({
       <Form {...form}>
         <form
           id="partnerForm"
-          onSubmit={form.handleSubmit(onSubmit, console.log)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4 p-4"
         >
           <FormField
@@ -67,6 +70,19 @@ const PartnerPanel = ({
                 <FormLabel>Tên</FormLabel>
                 <FormControl>
                   <Input placeholder="Nhập tên đối tác" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nhập mô tả" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -98,10 +114,19 @@ const PartnerPanel = ({
               </FormItem>
             )}
           />
-
-          <Button type="submit" className="w-full">
-            Đăng nhập
-          </Button>
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Loại</FormLabel>
+                <FormControl>
+                  <Input placeholder="Doanh nghiệp, Cá nhân, ..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </form>
       </Form>
     </Panel>

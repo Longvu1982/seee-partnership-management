@@ -17,6 +17,7 @@ export const useTriggerLoading = () => {
     key?: string,
     isAll?: boolean
   ) => {
+    console.log("here");
     const loadingKey = key ?? generateUniqueString();
 
     try {

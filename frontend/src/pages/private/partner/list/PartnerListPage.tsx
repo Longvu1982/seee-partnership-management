@@ -3,7 +3,11 @@ import type { EnhancedColumnDef } from "@/components/data-table/dataTable.utils"
 import { Button } from "@/components/ui/button";
 import { useGetInitData } from "@/hooks/use-get-init-data";
 import { usePagination } from "@/hooks/use-pagination";
-import { apiListPartners } from "@/services/main/partnerServices";
+import {
+  apiListPartners,
+  apiCreatePartner,
+  apiUpdatePartner,
+} from "@/services/main/partnerServices";
 import {
   initQueryParams,
   type PartnerFormValues,
@@ -15,6 +19,8 @@ import { Edit, PlusCircle, Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import PartnerPanel, { initFormValues, schema } from "./panel/PartnerPanel";
+import { useTriggerLoading } from "@/hooks/use-trigger-loading";
+import { toast } from "sonner";
 
 const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
@@ -78,6 +84,8 @@ const PartnerListPage = () => {
     type: "create" | "edit";
   }>({ isOpen: false, type: "create" });
 
+  const { triggerLoading } = useTriggerLoading();
+
   const form = useForm<PartnerFormValues>({
     resolver: zodResolver(schema),
     defaultValues: { ...initFormValues },
@@ -98,8 +106,26 @@ const PartnerListPage = () => {
     }
   };
 
-  const onSubmit = (values: A) => {
-    console.log(values);
+  const onCreateUpdate = async (data: PartnerFormValues) => {
+    await triggerLoading(async () => {
+      const promise =
+        panelState.type === "create" ? apiCreatePartner : apiUpdatePartner;
+      await promise(data);
+
+      toast.success(
+        panelState.type === "create"
+          ? "Thêm đối tác mới thành công"
+          : "Chỉnh sửa thành công"
+      );
+
+      await getPartnerList(queryParams);
+      setPanelState((prev) => ({ ...prev, isOpen: false }));
+    });
+  };
+
+  const onEditClick = (data: PartnerResponse) => {
+    form.reset({ ...data });
+    setPanelState((prev) => ({ ...prev, isOpen: true, type: "edit" }));
   };
 
   const { onPaginationChange } = usePagination({
@@ -127,7 +153,7 @@ const PartnerListPage = () => {
           form.reset({ ...initFormValues });
         }}
       >
-        <PlusCircle /> Thêm kho
+        <PlusCircle /> Thêm đối tác
       </Button>
 
       <p className="mb-4">
@@ -141,6 +167,7 @@ const PartnerListPage = () => {
           manualPagination
           pagination={queryParams.pagination}
           onPaginationChange={onPaginationChange}
+          meta={{ onEditClick }}
         />
       </div>
 
@@ -150,7 +177,7 @@ const PartnerListPage = () => {
         setIsOpen={(value) =>
           setPanelState((prev) => ({ ...prev, isOpen: value }))
         }
-        onSubmit={onSubmit}
+        onSubmit={onCreateUpdate}
       />
     </>
   );

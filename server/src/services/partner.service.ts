@@ -1,6 +1,25 @@
 import { Prisma, Partner } from '@prisma/client';
-import { QueryDataModel } from '../types/general';
+import { QueryDataModel, TPartnerCreate, TPartnerUpdate } from '../types/general';
 import { db } from '../utils/db.server';
+
+export const createPartner = async (data: TPartnerCreate): Promise<Partner> => {
+  return db.partner.create({
+    data: {
+      name: data.name,
+      description: data.description,
+      sector: data.sector,
+      address: data.address,
+      type: data.type,
+    },
+  });
+};
+
+export const updatePartner = async (id: string, data: TPartnerUpdate): Promise<Partner> => {
+  return db.partner.update({
+    where: { id },
+    data,
+  });
+};
 
 export const listPartners = async (model: QueryDataModel): Promise<{ totalCount: number; partners: Partner[] }> => {
   const { pagination, searchText, sort, filter } = model;

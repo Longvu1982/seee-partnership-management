@@ -95,3 +95,11 @@ export type PartnerFormValues = Omit<
   PartnerResponse,
   "id" | "createdAt" | "updatedAt"
 > & { id?: string };
+
+export type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+};
+
+export type PartnerCreateResponse = ApiResponse<PartnerResponse>;
+export type PartnerUpdateResponse = ApiResponse<PartnerResponse>;
