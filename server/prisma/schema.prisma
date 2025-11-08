@@ -19,7 +19,6 @@ model User {
   email        String?
   phone        String?
   role         Role          @default(USER)
-  departmentId String
   department   Department    @default(SCHOOLOFFICE)
   events       Event[]
   userPartners UserPartner[]
@@ -29,23 +28,23 @@ model User {
 }
 
 model Contact {
-  id          String           @id @default(cuid())
-  name        String
-  email       String?
-  phone       String?
-  description String?
-  partners    PartnerContact[]
-  events      EventContact[]
-  isActive    Boolean          @default(true)
+  id              String           @id @default(cuid())
+  name            String
+  email           String?
+  phone           String?
+  description     String?
+  partnerContacts PartnerContact[]
+  eventContacts   EventContact[]
+  isActive        Boolean          @default(true)
 }
 
 model Partner {
-  id          String      @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
   sector      String?
   address     String?
-  type        PartnerType @default(ENTERPRISE)
+  type        String?
 
   userPartners    UserPartner[]
   partnerEvents   PartnerEvent[]
@@ -148,15 +147,6 @@ enum EventStatus {
   ACTIVE
   CLOSED
   TERMINATED
-}
-
-enum PartnerType {
-  ENTERPRISE
-  INDIVIDUAL
-  SCHOOLAR
-  SCHOOL
-  GOVERNMENT
-  NON_GOVERNMENT
 }
 
 enum Department {
