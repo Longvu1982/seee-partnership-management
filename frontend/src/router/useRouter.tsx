@@ -3,6 +3,9 @@ import useAuthStore from "@/store/auth";
 import { createBrowserRouter } from "react-router-dom";
 import { Home, Login, ProtectedRoutes } from "./routeLoader";
 import { partnerRoutes } from "./routes/partner.routers";
+import { eventRoutes } from "./routes/event.routers";
+import { contactRoutes } from "./routes/contact.routers";
+import { userRoutes } from "./routes/user.routers";
 
 export const useRouter = () => {
   const user = useAuthStore((s) => s.user);
@@ -25,7 +28,12 @@ export const useRouter = () => {
     },
     {
       element: <ProtectedRoutes />,
-      children: getRoutesByRole([...partnerRoutes]),
+      children: getRoutesByRole([
+        ...partnerRoutes,
+        ...eventRoutes,
+        ...contactRoutes,
+        ...userRoutes,
+      ]),
     },
   ]);
 

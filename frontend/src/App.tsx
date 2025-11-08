@@ -36,7 +36,7 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="seee-ui-theme">
       {isAuthenticating && (
         <div className="fixed inset-0 z-10000 bg-background">
-          Authenticating...
+          Đang xác thực...
         </div>
       )}
       <RouterProvider router={router} />

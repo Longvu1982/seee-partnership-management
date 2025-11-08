@@ -94,7 +94,7 @@ const CollapsibleMenuItem: FC<CollapsibleMenuItemProps> = ({
                     setOpenMobile(false);
                   })
                 }
-                className="w-full justify-start py-0 h-8"
+                className="w-full justify-start py-0 h-8 cursor-pointer"
               >
                 {item.title}
               </SidebarMenuButton>

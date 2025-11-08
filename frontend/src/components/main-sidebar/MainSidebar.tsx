@@ -1,9 +1,4 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup } from "@/components/ui/sidebar";
 import useAuthStore from "@/store/auth";
 import { Role } from "@/types/enum/app-enum";
 import { Avatar } from "../ui/avatar";
@@ -16,6 +11,27 @@ const menus: TMenuItem[] = [
     title: "Danh sách đối tác",
     role: [],
     link: "/partner-list",
+    level: 1,
+  },
+  {
+    type: "single",
+    title: "Danh sách sự kiện",
+    role: [],
+    link: "/event-list",
+    level: 1,
+  },
+  {
+    type: "single",
+    title: "Danh sách liên hệ",
+    role: [],
+    link: "/contact-list",
+    level: 1,
+  },
+  {
+    type: "single",
+    title: "Danh sách tài khoản",
+    role: [Role.ADMIN],
+    link: "/user-list",
     level: 1,
   },
 ];
@@ -41,7 +57,6 @@ const MainSidebar = () => {
             ))}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>{/* Add footer content here */}</SidebarFooter>
     </Sidebar>
   );
 };

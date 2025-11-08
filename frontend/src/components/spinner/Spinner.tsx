@@ -39,12 +39,13 @@ export interface FullPageSpinnerProps
     VariantProps<typeof spinnerVariants>,
     VariantProps<typeof overlayVariants> {
   fullPage?: boolean;
+  show?: boolean;
 }
 
 const Spinner = React.forwardRef<HTMLDivElement, FullPageSpinnerProps>(
-  ({ className, size, fullPage, ...props }, ref) => {
+  ({ className, size, fullPage, show = false, ...props }, ref) => {
     const { isLoading: isGlobalLoading } = useLoading();
-    if (!isGlobalLoading) return null;
+    if (!isGlobalLoading && !show) return null;
     return (
       <div
         ref={ref}

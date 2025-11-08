@@ -1,5 +1,5 @@
 const PartnerListPage = () => {
-  return <div></div>;
+  return <div>Partner List Page</div>;
 };
 
 export default PartnerListPage;
