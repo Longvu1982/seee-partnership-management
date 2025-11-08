@@ -43,6 +43,13 @@ export default function AvatarMenu() {
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
 
         <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => navigate("/account")}
+          className="cursor-pointer"
+        >
+          Quản lý tài khoản
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
           Đăng xuất
           <DropdownMenuShortcut>⌘</DropdownMenuShortcut>

@@ -34,6 +34,13 @@ const menus: TMenuItem[] = [
     link: "/user-list",
     level: 1,
   },
+  {
+    type: "single",
+    title: "Quản lý tài khoản",
+    role: [],
+    link: "/account",
+    level: 1,
+  },
 ];
 
 const MainSidebar = () => {
