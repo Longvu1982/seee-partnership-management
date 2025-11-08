@@ -113,10 +113,11 @@ enum Role {
 }
 
 enum PartnershipStatus {
-  ACTIVE
-  COMPLETED
+  PROSPECT
   PENDING
-  CANCELLED
+  ACTIVE
+  CLOSED
+  TERMINATED
 }
 
 enum PartnerType {
