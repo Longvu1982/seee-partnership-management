@@ -20,47 +20,40 @@ model User {
   phone        String?
   role         Role          @default(USER)
   departmentId String
-  department   Department    @relation(fields: [departmentId], references: [id])
-  partnerships Partnership[]
+  department   Department    @default(SCHOOLOFFICE)
+  events       Event[]
   userPartners UserPartner[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   isActive     Boolean       @default(true)
-}
-
-model Department {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  users       User[]
-  isActive    Boolean  @default(true)
 }
 
 model Contact {
-  id       String    @id @default(cuid())
-  name     String
-  email    String?
-  phone    String?
-  partners Partner[]
-  isActive Boolean   @default(true)
+  id          String           @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  description String?
+  partners    PartnerContact[]
+  events      EventContact[]
+  isActive    Boolean          @default(true)
 }
 
 model Partner {
-  id           String        @id @default(cuid())
-  name         String
-  description  String?
-  sector       String?
-  address      String?
-  contactId    String
-  contact      Contact?      @relation(fields: [contactId], references: [id])
-  type         PartnerType   @default(ENTERPRISE)
-  partnerships Partnership[]
-  userPartners UserPartner[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  isActive     Boolean       @default(true)
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  sector      String?
+  address     String?
+  type        PartnerType @default(ENTERPRISE)
+
+  userPartners    UserPartner[]
+  partnerEvents   PartnerEvent[]
+  partnerContacts PartnerContact[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
 }
 
 // Many-to-many (User ↔ Partner)
@@ -71,21 +64,61 @@ model UserPartner {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id])
-  partner      Partner       @relation(fields: [partnerId], references: [id])
-  partnerships Partnership[]
+  user    User    @relation(fields: [userId], references: [id])
+  partner Partner @relation(fields: [partnerId], references: [id])
 
   @@unique([userId, partnerId])
 }
 
-// Each partnership (activity) belongs to one user-partner pair
-model Partnership {
-  id                    String            @id @default(cuid())
+// Many-to-many (Event ↔ Partner)
+model PartnerEvent {
+  id        String   @id @default(cuid())
+  partnerId String
+  eventId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id])
+  event   Event   @relation(fields: [eventId], references: [id])
+
+  @@unique([partnerId, eventId])
+}
+
+// Many-to-many (Event ↔ Contact)
+model EventContact {
+  id        String   @id @default(cuid())
+  eventId   String
+  contactId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event   Event   @relation(fields: [eventId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
+
+  @@unique([eventId, contactId])
+}
+
+// Many-to-many (Partner ↔ Contact)
+model PartnerContact {
+  id        String   @id @default(cuid())
+  partnerId String
+  contactId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
+
+  @@unique([partnerId, contactId])
+}
+
+model Event {
+  id                    String      @id @default(cuid())
   title                 String
   description           String?
   startDate             DateTime?
   endDate               DateTime?
-  status                PartnershipStatus @default(ACTIVE)
+  status                EventStatus @default(ACTIVE)
   documents             String[]
   funding_amount        Float?
   funding_currency      String?
@@ -94,14 +127,11 @@ model Partnership {
   feedback              String?
   rating                Int?
 
-  userPartnerId String
-  userPartner   UserPartner @relation(fields: [userPartnerId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
-
-  partnerId String?
-  partner   Partner? @relation(fields: [partnerId], references: [id])
+  partnerEvents PartnerEvent[]
+  eventContacts EventContact[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -112,7 +142,7 @@ enum Role {
   USER
 }
 
-enum PartnershipStatus {
+enum EventStatus {
   PROSPECT
   PENDING
   ACTIVE
@@ -127,4 +157,12 @@ enum PartnerType {
   SCHOOL
   GOVERNMENT
   NON_GOVERNMENT
+}
+
+enum Department {
+  ELECTRICAL
+  ELECTRONIC
+  COMMUNICATION
+  AUTOMATION
+  SCHOOLOFFICE
 }
