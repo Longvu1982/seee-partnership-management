@@ -1,4 +1,3 @@
-import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -63,10 +62,7 @@ export default function Login() {
           <div className="space-y-2">
             <h2 className="text-center text-xs">Đăng nhập vào</h2>
             <div className="flex items-center gap-2 mx-auto justify-center">
-              <Avatar className="size-8">
-                {/* <AvatarImage src={logo} /> */}
-              </Avatar>
-              <span className="font-semibold italic">SEEE</span>
+              <span className="font-semibold">SEEE PARTNERSHIP MANAGEMENT</span>
             </div>
           </div>
           <FormField

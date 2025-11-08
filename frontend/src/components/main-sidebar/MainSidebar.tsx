@@ -1,7 +1,6 @@
 import { Sidebar, SidebarContent, SidebarGroup } from "@/components/ui/sidebar";
 import useAuthStore from "@/store/auth";
 import { Role } from "@/types/enum/app-enum";
-import { Avatar } from "../ui/avatar";
 import MenuItem from "./menu-item/MenuItem";
 import { type TMenuItem } from "./menu-item/menuItems.type";
 
@@ -49,9 +48,8 @@ const MainSidebar = () => {
 
   return (
     <Sidebar>
-      <div className="flex items-center gap-2 ml-4 py-4">
-        <Avatar className="size-8">{/* <AvatarImage src={logo} /> */}</Avatar>
-        <span className="font-semibold italic">SEEE</span>
+      <div className="text-center py-3 border-b mb-3">
+        <span className="font-semibold">SEEE Partnership Management</span>
       </div>
       <SidebarContent>
         <SidebarGroup className="space-y-1">
