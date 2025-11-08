@@ -15,7 +15,7 @@ const ProtectedRoutes = () => {
   return (
     <SidebarProvider>
       <MainSidebar />
-      <div className="w-full">
+      <div className="w-full overflow-x-hidden">
         <header className="h-12 shadow-sm flex items-center justify-between p-2 bg-background sticky top-0 z-10 border-b">
           <SidebarTrigger />
           <AvatarMenu />

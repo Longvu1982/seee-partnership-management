@@ -6,6 +6,10 @@ import { pino } from 'pino';
 import { notFoundHandler } from './middleware/not-found';
 import requestLogger from './middleware/requestLogger';
 import authRouter from './routes/auth.router';
+import userRouter from './routes/user.router';
+import contactRouter from './routes/contact.router';
+import eventRouter from './routes/event.router';
+import partnerRouter from './routes/partner.router';
 
 dotenv.config();
 
@@ -33,6 +37,10 @@ app.use('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api/contact', contactRouter);
+app.use('/api/event', eventRouter);
+app.use('/api/partner', partnerRouter);
 
 // Not Found Middleware
 app.use(notFoundHandler);

@@ -34,7 +34,7 @@ const protectAuth = async (request: Request, response: Response, next: NextFunct
 const protectRoles = (roles: Role[]) => {
   return (request: Request, response: Response, next: NextFunction) => {
     const user = request.user;
-    if (roles.length > 0 && !roles.includes(user?.account?.role)) {
+    if (roles.length > 0 && !roles.includes(user?.role as Role)) {
       return sendForbiddenResponse(response, 'Không có quyền thực hiện tác vụ');
     }
     next();

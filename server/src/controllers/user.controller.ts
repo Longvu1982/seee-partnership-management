@@ -11,3 +11,14 @@ export const getUserByID = async (request: Request, response: Response, next: Ne
     next(error);
   }
 };
+
+export const listUsers = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const user = request.user;
+    const query = request.body;
+    const orders = await UserService.listUsers(query, user!);
+    return sendSuccessResponse(response, orders);
+  } catch (error: any) {
+    next(error);
+  }
+};

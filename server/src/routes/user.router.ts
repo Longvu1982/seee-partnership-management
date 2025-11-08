@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.get('/:userId', protectAuth, UserController.getUserByID);
 
+router.post('/list', protectAuth, UserController.listUsers);
+
 export default router;
