@@ -89,15 +89,20 @@ const UserListPage = () => {
   useGetInitData(() => getUserList(initQueryParams));
 
   return (
-    <div className="overflow-x-auto">
-      <DataTable
-        data={userList}
-        columns={columns}
-        manualPagination
-        pagination={queryParams.pagination}
-        onPaginationChange={onPaginationChange}
-      />
-    </div>
+    <>
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
+        Danh sách tài khoản
+      </h3>
+      <div className="overflow-x-auto">
+        <DataTable
+          data={userList}
+          columns={columns}
+          manualPagination
+          pagination={queryParams.pagination}
+          onPaginationChange={onPaginationChange}
+        />
+      </div>
+    </>
   );
 };
 

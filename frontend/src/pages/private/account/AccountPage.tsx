@@ -1,5 +1,5 @@
 const AccountPage = () => {
-  return <div>Account Management Page</div>;
+  return <div>...TO DO...</div>;
 };
 
 export default AccountPage;

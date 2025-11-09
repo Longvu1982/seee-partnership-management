@@ -204,9 +204,11 @@ const EventListPage = () => {
         <PlusCircle /> Thêm sự kiện
       </Button>
 
-      <p className="">
-        Số lượng: <strong>{queryParams.pagination.totalCount}</strong>
-      </p>
+      {queryParams.pagination.totalCount > 0 && (
+        <p className="">
+          Số lượng: <strong>{queryParams.pagination.totalCount}</strong>
+        </p>
+      )}
 
       <div className="overflow-x-auto">
         <DataTable
