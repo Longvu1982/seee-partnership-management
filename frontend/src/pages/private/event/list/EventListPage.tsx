@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { getEventStatusBadge } from "./event.utils";
 import EventPanel, { initFormValues, schema } from "./panel/EventPanel";
+import { Link } from "react-router-dom";
 
 const columns: EnhancedColumnDef<EventResponse>[] = [
   {
@@ -35,6 +36,16 @@ const columns: EnhancedColumnDef<EventResponse>[] = [
   {
     accessorKey: "title",
     header: "Tiêu đề",
+    cell: ({ row, getValue }) => {
+      return (
+        <Link
+          to={`/event-detail/${row.original.id}`}
+          className="hover:underline"
+        >
+          {getValue() as string}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "description",
@@ -137,6 +148,12 @@ const EventListPage = () => {
       ...row,
       startDate: row.startDate ? new Date(row.startDate) : null,
       endDate: row.endDate ? new Date(row.endDate) : null,
+      contactIds: row.eventContacts
+        ? row.eventContacts.map((item) => item.contact.id)
+        : [],
+      partnerIds: row.partnerEvents
+        ? row.partnerEvents.map((item) => item.partner.id)
+        : [],
     });
     setPanelState({ isOpen: true, type: "edit" });
   };

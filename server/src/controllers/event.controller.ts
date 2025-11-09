@@ -23,6 +23,16 @@ export const createEvent = async (request: Request, response: Response, next: Ne
   }
 };
 
+export const getEventByID = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { id } = request.params;
+    const event = await EventService.getEventByID(id);
+    return sendSuccessResponse(response, event);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const updateEvent = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { id } = request.params;

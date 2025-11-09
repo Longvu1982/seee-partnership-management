@@ -73,6 +73,24 @@ export const createEvent = async (data: TEventCreate, requestUser: TloginRead): 
   });
 };
 
+export const getEventByID = async (id: string): Promise<Event | null> => {
+  return db.event.findUnique({
+    where: { id },
+    include: {
+      eventContacts: {
+        include: {
+          contact: true,
+        },
+      },
+      partnerEvents: {
+        include: {
+          partner: true,
+        },
+      },
+    },
+  });
+};
+
 export const updateEvent = async (id: string, data: TEventUpdate): Promise<Event> => {
   const { partnerIds = [], contactIds = [], ...eventData } = data;
 

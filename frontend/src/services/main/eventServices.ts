@@ -5,6 +5,8 @@ import type {
   EventFormValues,
   EventCreateResponse,
   EventUpdateResponse,
+  EventResponse,
+  ApiResponse,
 } from "@/types/model/app-model";
 import type { AxiosResponse } from "axios";
 
@@ -25,6 +27,15 @@ export async function apiCreateEvent(
     url: "/event",
     method: "post",
     data,
+  });
+}
+
+export async function apiGetEventById(
+  id: string
+): Promise<AxiosResponse<ApiResponse<EventResponse>>> {
+  return ApiService.fetchData<ApiResponse<EventResponse>>({
+    url: `/event/${id}`,
+    method: "get",
   });
 }
 
