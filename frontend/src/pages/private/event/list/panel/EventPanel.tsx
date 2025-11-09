@@ -34,6 +34,7 @@ import { Badge } from "@/components/ui/badge";
 import MultipleSelector from "@/components/multi-select/MutipleSelect";
 import { CurrencySelect, type Currency } from "@/components/ui/currency-select";
 import { useState } from "react";
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
 
 export const schema = z.object({
   id: z.string().optional(),
@@ -283,48 +284,10 @@ const EventPanel = ({
             control={form.control}
             name="student_reach_actual"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mb-6">
                 <FormLabel>Sinh viên (thực tế)</FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="Số lượng" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mô tả</FormLabel>
-                <FormControl>
-                  <Textarea
-                    spellCheck={false}
-                    placeholder="Mô tả"
-                    {...field}
-                    value={field.value as string}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="feedback"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phản hồi</FormLabel>
-                <FormControl>
-                  <Textarea
-                    spellCheck={false}
-                    placeholder="Phản hồi"
-                    {...field}
-                    value={field.value as string}
-                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -372,6 +335,69 @@ const EventPanel = ({
                     }
                     // {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mô tả</FormLabel>
+                <FormControl>
+                  <Textarea
+                    spellCheck={false}
+                    placeholder="Mô tả"
+                    {...field}
+                    value={field.value as string}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="feedback"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phản hồi</FormLabel>
+                <FormControl>
+                  <Textarea
+                    spellCheck={false}
+                    placeholder="Phản hồi"
+                    {...field}
+                    value={field.value as string}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="rating"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Đánh giá sự kiện</FormLabel>
+                <FormControl>
+                  <Rating
+                    value={field.value ?? 0}
+                    onValueChange={field.onChange}
+                  >
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <RatingButton
+                        size={25}
+                        key={index}
+                        className="text-yellow-500"
+                      />
+                    ))}
+                  </Rating>
                 </FormControl>
                 <FormMessage />
               </FormItem>

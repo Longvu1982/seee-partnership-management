@@ -16,7 +16,7 @@ export const useContactListModal = () => {
       openLeave({
         title: `Danh sách liên hệ - ${partner.name}`,
         content: (
-          <div className="space-y-4 max-h-[60vh] overflow-y-auto py-1">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto py-1 theme-scrollbar">
             {contacts.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-4">
                 Không có liên hệ nào

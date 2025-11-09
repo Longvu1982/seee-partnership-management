@@ -40,7 +40,7 @@ const columns: EnhancedColumnDef<EventResponse>[] = [
       return (
         <Link
           to={`/event-detail/${row.original.id}`}
-          className="hover:underline"
+          className="hover:underline text-primary"
         >
           {getValue() as string}
         </Link>
