@@ -175,9 +175,6 @@ const EventPanel = ({
                         mode="single"
                         selected={field.value as Date}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
                         captionLayout="dropdown"
                       />
                     </PopoverContent>
@@ -217,9 +214,6 @@ const EventPanel = ({
                         mode="single"
                         selected={field.value as Date}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
                         captionLayout="dropdown"
                       />
                     </PopoverContent>

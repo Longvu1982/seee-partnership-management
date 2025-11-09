@@ -36,6 +36,7 @@ const Panel: FC<PanelProps> = ({
       open={open}
       onOpenChange={onOpenChange}
       onRelease={(e) => e.preventDefault()}
+      dismissible={false}
     >
       {trigger && <DrawerTrigger>{trigger}</DrawerTrigger>}
       <DrawerContent
@@ -48,7 +49,11 @@ const Panel: FC<PanelProps> = ({
             <DrawerDescription>{description}</DrawerDescription>
           </div>
           <DrawerClose asChild>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onOpenChange?.(false)}
+            >
               <X />
             </Button>
           </DrawerClose>
@@ -56,7 +61,9 @@ const Panel: FC<PanelProps> = ({
         <div className="overflow-y-auto flex-1">{children}</div>
         <DrawerFooter className="flex items-center flex-row justify-end">
           <DrawerClose asChild>
-            <Button variant="outline">Quay lại</Button>
+            <Button variant="outline" onClick={() => onOpenChange?.(false)}>
+              Quay lại
+            </Button>
           </DrawerClose>
           <Button form={formId} type="submit">
             Áp dụng
