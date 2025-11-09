@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { useTriggerLoading } from "@/hooks/use-trigger-loading";
 import { apiGetEventById } from "@/services/main/eventServices";
 import type { EventResponse } from "@/types/model/app-model";
+import { useContactListModal } from "@/utils/contact-list-modal";
 import {
   ArrowLeft,
   Calendar,
@@ -14,6 +15,7 @@ import {
   Phone,
   Star,
   Users,
+  UserCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -57,6 +59,7 @@ const EventDetailPage = () => {
     {} as EventResponse
   );
   const { triggerLoading } = useTriggerLoading();
+  const { openContactListModal } = useContactListModal();
 
   const { variant, text } = getEventStatusBadge(eventData.status);
 
@@ -333,7 +336,8 @@ const EventDetailPage = () => {
             eventData.partnerEvents.map((pe) => (
               <div
                 key={pe.id}
-                className="p-6  rounded-lg border border-white shadow-md hover:border-primary/50 transition-colors"
+                className="p-6  rounded-lg border border-white shadow-md hover:border-primary/50 transition-colors cursor-pointer"
+                onClick={() => openContactListModal(pe.partner)}
               >
                 <div className="flex items-start justify-between mb-3 flex-col sm:flex-row gap-2">
                   <h3 className="text-lg font-semibold text-card-foreground flex-1">
@@ -357,23 +361,49 @@ const EventDetailPage = () => {
 
                 <Separator />
 
-                <div className="pt-3 space-y-2 text-xs text-muted-foreground">
-                  {pe.partner.type && (
-                    <p>
-                      <span className="font-medium">Loại:</span>{" "}
-                      {pe.partner.type}
-                    </p>
-                  )}
-                  {pe.partner.sector && (
-                    <p>
-                      <span className="font-medium">Lĩnh vực:</span>{" "}
-                      {pe.partner.sector}
-                    </p>
-                  )}
-                  {pe.partner.address && (
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
-                      <p>{pe.partner.address}</p>
+                <div className="pt-3 space-y-3">
+                  <div className="space-y-2 text-xs text-muted-foreground">
+                    {pe.partner.type && (
+                      <p>
+                        <span className="font-medium">Loại:</span>{" "}
+                        {pe.partner.type}
+                      </p>
+                    )}
+                    {pe.partner.sector && (
+                      <p>
+                        <span className="font-medium">Lĩnh vực:</span>{" "}
+                        {pe.partner.sector}
+                      </p>
+                    )}
+                    {pe.partner.address && (
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
+                        <p>{pe.partner.address}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {pe.partner.partnerContacts !== undefined && (
+                    <div className="pt-2">
+                      {pe.partner.partnerContacts &&
+                      pe.partner.partnerContacts.length > 0 ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openContactListModal(pe.partner);
+                          }}
+                        >
+                          <UserCircle className="h-3 w-3 mr-1.5" />
+                          Thông tin liên hệ +{pe.partner.partnerContacts.length}
+                        </Button>
+                      ) : (
+                        <div className="text-xs text-muted-foreground text-center py-1.5">
+                          Không có liên hệ
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

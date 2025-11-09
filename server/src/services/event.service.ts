@@ -84,7 +84,15 @@ export const getEventByID = async (id: string): Promise<Event | null> => {
       },
       partnerEvents: {
         include: {
-          partner: true,
+          partner: {
+            include: {
+              partnerContacts: {
+                include: {
+                  contact: true,
+                },
+              },
+            },
+          },
         },
       },
       user: true,
@@ -101,13 +109,13 @@ export const updateEvent = async (id: string, data: TEventUpdate): Promise<Event
       ...eventData,
 
       partnerEvents: {
-        deleteMany: {}, // remove all previous partner relations
+        deleteMany: {},
         create: partnerIds.map((partnerId) => ({
           partner: { connect: { id: partnerId } },
         })),
       },
       eventContacts: {
-        deleteMany: {}, // remove all previous contact relations
+        deleteMany: {},
         create: contactIds.map((contactId) => ({
           contact: { connect: { id: contactId } },
         })),
