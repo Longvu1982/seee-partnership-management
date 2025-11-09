@@ -50,6 +50,11 @@ const columns: EnhancedColumnDef<EventResponse>[] = [
   {
     accessorKey: "description",
     header: "Mô tả",
+    cell: ({ getValue }) => (
+      <span className="whitespace-pre-line block min-w-[100px]">
+        {getValue() as string}
+      </span>
+    ),
   },
   {
     accessorKey: "status",
