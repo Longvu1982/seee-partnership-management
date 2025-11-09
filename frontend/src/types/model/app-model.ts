@@ -72,11 +72,14 @@ export type EventResponse = {
   rating: number | null;
   userId: string;
   eventContacts?: {
+    id: string;
     contact: ContactResponse;
   }[];
   partnerEvents?: {
+    id: string;
     partner: PartnerResponse;
   }[];
+  user?: UserResponse;
   createdAt: string;
   updatedAt: string;
 };

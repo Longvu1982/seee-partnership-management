@@ -1,30 +1,64 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { apiGetEventById } from "@/services/main/eventServices";
-import type { EventResponse } from "@/types/model/app-model";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/spinner/Spinner";
-import { getEventStatusBadge } from "../list/event.utils";
+import { useTriggerLoading } from "@/hooks/use-trigger-loading";
+import { apiGetEventById } from "@/services/main/eventServices";
+import type { EventResponse } from "@/types/model/app-model";
 import {
   ArrowLeft,
   Calendar,
   DollarSign,
-  Users,
-  FileText,
-  Star,
+  Mail,
+  MapPin,
   MessageSquare,
+  Phone,
+  Star,
+  Users,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useTriggerLoading } from "@/hooks/use-trigger-loading";
+import { getEventStatusBadge } from "../list/event.utils";
+
+function StarRating({
+  rating,
+  maxRating = 5,
+}: {
+  rating: number;
+  maxRating?: number;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex gap-1">
+        {Array.from({ length: maxRating }).map((_, i) => (
+          <Star
+            key={i}
+            className={`w-5 h-5 ${
+              i < Math.floor(rating)
+                ? "fill-amber-400 text-amber-400"
+                : i < rating
+                ? "fill-amber-200 text-amber-400"
+                : "text-muted-foreground"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="text-sm font-medium text-foreground">
+        {rating.toFixed(1)}
+      </span>
+    </div>
+  );
+}
 
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [event, setEvent] = useState<EventResponse | null>(null);
+  const [eventData, setEventData] = useState<EventResponse>(
+    {} as EventResponse
+  );
   const { triggerLoading } = useTriggerLoading();
+
+  const { variant, text } = getEventStatusBadge(eventData.status);
 
   useEffect(() => {
     if (!id) {
@@ -38,7 +72,7 @@ const EventDetailPage = () => {
         try {
           const { data } = await apiGetEventById(id);
           if (data.success) {
-            setEvent(data.data);
+            setEventData(data.data);
           } else {
             toast.error("Có lỗi xảy ra tải sự kiện");
             navigate("/event-list");
@@ -54,31 +88,12 @@ const EventDetailPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!event) {
-    return <Spinner show={true} />;
-  }
-
-  const { variant: statusVariant, text: statusText } = getEventStatusBadge(
-    event.status
-  );
-
   const formatDate = (date: Date | string | null) => {
     if (!date) return "-";
     return new Date(date).toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
-  };
-
-  const formatDateTime = (date: Date | string | null) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
@@ -90,311 +105,315 @@ const EventDetailPage = () => {
     }).format(amount);
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => navigate("/event-list")}
-        >
-          <ArrowLeft />
-        </Button>
-        <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">
-          Chi tiết sự kiện
-        </h1>
-      </div>
+  if (!eventData.id) return <></>;
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="space-y-2">
-              <CardTitle className="text-2xl">{event.title}</CardTitle>
-              <div className="flex items-center gap-2">
-                <Badge variant={statusVariant}>{statusText}</Badge>
-              </div>
+  return (
+    <div className="px-0 md:px-2 pt-0 pb-12">
+      {/* Header Section */}
+      <div className="mb-12">
+        <div className="flex items-start justify-between gap-4 mb-10">
+          <div className="flex-1">
+            <Button
+              variant="link"
+              size="icon"
+              onClick={() => navigate("/event-list")}
+              className="w-fit mb-4"
+            >
+              <ArrowLeft /> Quay lại danh sách
+            </Button>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              {eventData.title}
+            </h1>
+            <div className="flex items-center gap-3">
+              <Badge variant={variant}>{text}</Badge>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Description */}
-          {event.description && (
+        </div>
+
+        {/* Event Date & Time */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="flex items-center gap-3 p-4  rounded-lg border border-white shadow-md">
+            <Calendar className="w-5 h-5 text-primary" />
             <div>
-              <h3 className="text-sm font-semibold mb-2">Mô tả</h3>
-              <p className="text-sm text-muted-foreground whitespace-pre-line">
-                {event.description}
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                Ngày bắt đầu
+              </p>
+              <p className="text-sm font-medium text-card-foreground">
+                {formatDate(eventData.startDate)}
               </p>
             </div>
-          )}
-
-          <Separator />
-
-          {/* Dates */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start gap-3">
-              <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
-              <div>
-                <h3 className="text-sm font-semibold mb-1">Ngày bắt đầu</h3>
-                <p className="text-sm text-muted-foreground">
-                  {formatDate(event.startDate)}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
-              <div>
-                <h3 className="text-sm font-semibold mb-1">Ngày kết thúc</h3>
-                <p className="text-sm text-muted-foreground">
-                  {formatDate(event.endDate)}
-                </p>
-              </div>
+          </div>
+          <div className="flex items-center gap-3 p-4  rounded-lg border border-white shadow-md">
+            <Calendar className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                Ngày kết thúc
+              </p>
+              <p className="text-sm font-medium text-card-foreground">
+                {formatDate(eventData.endDate)}
+              </p>
             </div>
           </div>
+        </div>
 
-          <Separator />
+        {/* Event Description */}
+        <div className="p-6  rounded-lg border border-white shadow-md">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Mô tả sự kiện
+          </h2>
+          <p className="text-sm text-card-foreground leading-relaxed">
+            {eventData.description || "Chưa có mô tả"}
+          </p>
+        </div>
+      </div>
 
-          {/* Funding Information */}
-          {(event.funding_amount || event.funding_currency) && (
-            <>
-              <div>
-                <div className="flex items-start gap-3 mb-4">
-                  <DollarSign className="h-5 w-5 text-muted-foreground mt-0.5" />
-                  <h3 className="text-sm font-semibold">Thông tin tài trợ</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-8">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">
-                      Số tiền
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formatCurrency(
-                        event.funding_amount,
-                        event.funding_currency
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">
-                      Loại tiền tệ
-                    </p>
-                    <p className="text-sm font-medium">
-                      {event.funding_currency || "-"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+        <div className="p-6  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 mb-2">
+            <Users className="w-5 h-5 text-primary" />
+            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              Sinh viên (Dự kiến)
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-card-foreground">
+            {eventData.student_reach_planned}
+          </p>
+        </div>
+        <div className="p-6  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 mb-2">
+            <Users className="w-5 h-5 text-primary" />
+            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              Sinh viên (Thực tế)
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-card-foreground">
+            {eventData.student_reach_actual}
+          </p>
+        </div>
+        <div className="p-6  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 mb-2">
+            <DollarSign className="w-5 h-5 text-primary" />
+            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              Kinh phí
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-card-foreground">
+            {formatCurrency(
+              // eventData.funding_amount,
+              // eventData.funding_currency
+              100000,
+              "USD"
+            )}
+            {/* {eventData.funding_currency} */}
+          </p>
+        </div>
+      </div>
 
-          {/* Student Reach */}
-          {(event.student_reach_planned || event.student_reach_actual) && (
-            <>
-              <div>
-                <div className="flex items-start gap-3 mb-4">
-                  <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
-                  <h3 className="text-sm font-semibold">Số lượng sinh viên</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-8">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">
-                      Kế hoạch
-                    </p>
-                    <p className="text-sm font-medium">
-                      {event.student_reach_planned?.toLocaleString("vi-VN") ||
-                        "-"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">
-                      Thực tế
-                    </p>
-                    <p className="text-sm font-medium">
-                      {event.student_reach_actual?.toLocaleString("vi-VN") ||
-                        "-"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
+      {/* Rating and Feedback Section */}
+      <section className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Rating Card */}
+        <div className="p-6  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 mb-4">
+            <Star className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold text-foreground">
+              Đánh giá sự kiện
+            </h3>
+          </div>
+          <div className="space-y-2">
+            <StarRating rating={eventData.rating ?? 0} />
+            <p className="text-sm text-muted-foreground">Đánh giá trung bình</p>
+          </div>
+        </div>
 
-          {/* Feedback and Rating */}
-          {(event.feedback || event.rating !== null) && (
-            <>
-              <div>
-                <div className="flex items-start gap-3 mb-4">
-                  <MessageSquare className="h-5 w-5 text-muted-foreground mt-0.5" />
-                  <h3 className="text-sm font-semibold">
-                    Đánh giá và phản hồi
-                  </h3>
+        {/* Feedback Card */}
+        <div className="p-6  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 mb-4">
+            <MessageSquare className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-semibold text-foreground">Nhận xét</h3>
+          </div>
+          <p className="text-sm text-card-foreground leading-relaxed">
+            {eventData.feedback || "Chưa có nhận xét"}
+          </p>
+        </div>
+      </section>
+
+      {/* Contacts Section */}
+      <section className="mb-12">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Liên hệ (nhà trường)
+          </h2>
+          <p className="text-muted-foreground">
+            Những người liên hệ chính cho sự kiện này
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {eventData.eventContacts &&
+            eventData.eventContacts.length > 0 &&
+            eventData.eventContacts.map((ec) => (
+              <div
+                key={ec.id}
+                className="p-6  rounded-lg border border-white shadow-md hover:border-primary/50 transition-colors"
+              >
+                <div className="flex items-start justify-between mb-4 flex-col md:flex-row gap-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-card-foreground mb-1">
+                      {ec.contact.name}
+                    </h3>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-blue-100 dark:bg-blue-900">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          ec.contact.isActive ? "bg-blue-600" : "bg-gray-400"
+                        }`}
+                      />
+                      <span className="text-xs font-medium text-blue-800 dark:text-blue-100">
+                        {ec.contact.isActive
+                          ? "Đang hoạt động"
+                          : "Không hoạt động"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-4 ml-8">
-                  {event.rating !== null && (
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Đánh giá
+
+                <div className="space-y-3">
+                  {ec.contact.email && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <a
+                        href={`mailto:${ec.contact.email}`}
+                        className="text-primary hover:underline break-all"
+                      >
+                        {ec.contact.email}
+                      </a>
+                    </div>
+                  )}
+                  {ec.contact.phone && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <a
+                        href={`tel:${ec.contact.phone}`}
+                        className="text-primary hover:underline"
+                      >
+                        {ec.contact.phone}
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {ec.contact.description && (
+                  <>
+                    <Separator className="mt-6" />
+                    <div className="mt-4 pt-4 border-border dark:border-white">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+                        Mô tả
                       </p>
-                      <div className="flex items-center gap-2">
-                        <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">
-                          {event.rating}/5
-                        </span>
+                      <div className="text-sm text-card-foreground whitespace-pre-wrap">
+                        {ec.contact.description}
                       </div>
                     </div>
+                  </>
+                )}
+              </div>
+            ))}
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section className="mb-12">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-foreground mb-2">Đối tác</h2>
+          <p className="text-muted-foreground">
+            Các tổ chức hợp tác trong sự kiện này
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {eventData.partnerEvents &&
+            eventData.partnerEvents.length > 0 &&
+            eventData.partnerEvents.map((pe) => (
+              <div
+                key={pe.id}
+                className="p-6  rounded-lg border border-white shadow-md hover:border-primary/50 transition-colors"
+              >
+                <div className="flex items-start justify-between mb-3 flex-col sm:flex-row gap-2">
+                  <h3 className="text-lg font-semibold text-card-foreground flex-1">
+                    {pe.partner.name}
+                  </h3>
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium shrink-0 ${
+                      pe.partner.isActive
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        pe.partner.isActive ? "bg-green-600" : "bg-gray-400"
+                      }`}
+                    />
+                    {pe.partner.isActive ? "Đang hoạt động" : "Không hoạt động"}
+                  </span>
+                </div>
+
+                <Separator />
+
+                <div className="pt-3 space-y-2 text-xs text-muted-foreground">
+                  {pe.partner.type && (
+                    <p>
+                      <span className="font-medium">Loại:</span>{" "}
+                      {pe.partner.type}
+                    </p>
                   )}
-                  {event.feedback && (
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Phản hồi
-                      </p>
-                      <p className="text-sm whitespace-pre-line">
-                        {event.feedback}
-                      </p>
+                  {pe.partner.sector && (
+                    <p>
+                      <span className="font-medium">Lĩnh vực:</span>{" "}
+                      {pe.partner.sector}
+                    </p>
+                  )}
+                  {pe.partner.address && (
+                    <div className="flex items-start gap-2">
+                      <MapPin className="w-3 h-3 shrink-0 mt-0.5" />
+                      <p>{pe.partner.address}</p>
                     </div>
                   )}
                 </div>
               </div>
-              <Separator />
-            </>
-          )}
+            ))}
+        </div>
+      </section>
 
-          {/* Documents */}
-          {event.documents && event.documents.length > 0 && (
-            <>
-              <div>
-                <div className="flex items-start gap-3 mb-4">
-                  <FileText className="h-5 w-5 text-muted-foreground mt-0.5" />
-                  <h3 className="text-sm font-semibold">Tài liệu</h3>
-                </div>
-                <div className="ml-8">
-                  <ul className="space-y-2">
-                    {event.documents.map((doc, index) => (
-                      <li key={index} className="text-sm">
-                        <a
-                          href={doc}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          {doc}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
-
-          {/* Contacts */}
-          {event.eventContacts && event.eventContacts.length > 0 && (
-            <>
-              <div>
-                <h3 className="text-sm font-semibold mb-4">
-                  Liên hệ liên quan
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {event.eventContacts.map((eventContact) => {
-                    const contact = eventContact.contact;
-                    return (
-                      <Card key={contact.id} className="p-4">
-                        <div className="space-y-2">
-                          <h4 className="font-medium">{contact.name}</h4>
-                          {contact.email && (
-                            <p className="text-sm text-muted-foreground">
-                              Email: {contact.email}
-                            </p>
-                          )}
-                          {contact.phone && (
-                            <p className="text-sm text-muted-foreground">
-                              Điện thoại: {contact.phone}
-                            </p>
-                          )}
-                          {contact.description && (
-                            <p className="text-sm text-muted-foreground">
-                              {contact.description}
-                            </p>
-                          )}
-                          <Badge
-                            variant={contact.isActive ? "default" : "secondary"}
-                          >
-                            {contact.isActive ? "Hoạt động" : "Tạm ngưng"}
-                          </Badge>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
-
-          {/* Partners */}
-          {event.partnerEvents && event.partnerEvents.length > 0 && (
-            <>
-              <div>
-                <h3 className="text-sm font-semibold mb-4">
-                  Đối tác liên quan
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {event.partnerEvents.map((partnerEvent) => {
-                    const partner = partnerEvent.partner;
-                    return (
-                      <Card key={partner.id} className="p-4">
-                        <div className="space-y-2">
-                          <h4 className="font-medium">{partner.name}</h4>
-                          {partner.sector && (
-                            <p className="text-sm text-muted-foreground">
-                              Lĩnh vực: {partner.sector}
-                            </p>
-                          )}
-                          {partner.type && (
-                            <p className="text-sm text-muted-foreground">
-                              Loại: {partner.type}
-                            </p>
-                          )}
-                          {partner.address && (
-                            <p className="text-sm text-muted-foreground">
-                              Địa chỉ: {partner.address}
-                            </p>
-                          )}
-                          {partner.description && (
-                            <p className="text-sm text-muted-foreground">
-                              {partner.description}
-                            </p>
-                          )}
-                          <Badge
-                            variant={partner.isActive ? "default" : "secondary"}
-                          >
-                            {partner.isActive ? "Hoạt động" : "Tạm ngưng"}
-                          </Badge>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </div>
-              <Separator />
-            </>
-          )}
-
-          {/* Metadata */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground mb-1">Ngày tạo</p>
-              <p className="font-medium">{formatDateTime(event.createdAt)}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">Ngày cập nhật</p>
-              <p className="font-medium">{formatDateTime(event.updatedAt)}</p>
-            </div>
+      {/* Event Metadata */}
+      <section className="p-6  rounded-lg border border-white shadow-md">
+        <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide mb-4">
+          Thông tin sự kiện
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-muted-foreground">ID sự kiện</p>
+            <p className="text-card-foreground font-mono text-xs break-all">
+              {eventData.id}
+            </p>
           </div>
-        </CardContent>
-      </Card>
+          <div>
+            <p className="text-muted-foreground">Người tạo sự kiện</p>
+            <p className="text-card-foreground font-mono text-xs break-all">
+              {eventData.user?.name}
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Tạo lúc</p>
+            <p className="text-card-foreground">
+              {formatDate(eventData.createdAt)}
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Cập nhật lúc</p>
+            <p className="text-card-foreground">
+              {formatDate(eventData.updatedAt)}
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

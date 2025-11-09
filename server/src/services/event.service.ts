@@ -87,6 +87,7 @@ export const getEventByID = async (id: string): Promise<Event | null> => {
           partner: true,
         },
       },
+      user: true,
     },
   });
 };
