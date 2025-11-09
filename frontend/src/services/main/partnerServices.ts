@@ -38,3 +38,14 @@ export async function apiUpdatePartner(
     data: updateData,
   });
 }
+
+export async function apiUpdatePartnerStatus(
+  id: string,
+  isActive: boolean
+): Promise<AxiosResponse<PartnerUpdateResponse>> {
+  return ApiService.fetchData<PartnerUpdateResponse>({
+    url: `/partner/${id}/status`,
+    method: "patch",
+    data: { isActive },
+  });
+}

@@ -1,4 +1,5 @@
 import AvatarMenu from "@/components/avatar-menu/AvatarMenu";
+import GlobalModal from "@/components/global-modal/GlobalModal";
 import MainSidebar from "@/components/main-sidebar/MainSidebar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -18,6 +19,8 @@ const ProtectedRoutes = () => {
   return (
     <SidebarProvider>
       <MainSidebar />
+      <GlobalModal />
+
       <div className="w-full overflow-x-hidden">
         <Sticky stickyClassName="z-10">
           <header className="h-12 shadow-sm flex items-center justify-between p-2 bg-background z-10 border-b">

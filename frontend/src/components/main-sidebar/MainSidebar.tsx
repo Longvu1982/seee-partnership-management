@@ -21,7 +21,7 @@ const menus: TMenuItem[] = [
   },
   {
     type: "single",
-    title: "Danh sách liên hệ (nhà trường)",
+    title: "Danh sách liên hệ",
     role: [],
     link: "/contact-list",
     level: 1,

@@ -20,5 +20,6 @@ declare module "@tanstack/table-core" {
     onReload: () => Promise<void>;
     copyToClipBoard: CopyFn;
     onActiveStateChange: (data: TData, value: boolean) => Promise<A>;
+    onViewContactlist: (data: TData) => A;
   }
 }

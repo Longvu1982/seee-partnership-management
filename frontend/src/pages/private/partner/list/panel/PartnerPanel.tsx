@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+import MultipleSelector from "@/components/multi-select/MutipleSelect";
 import Panel from "@/components/panel/Panel";
 import {
   Form,
@@ -15,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { PartnerFormValues } from "@/types/model/app-model";
 import { type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import { useGetOptions } from "../partner.utils";
 
 export const schema = z.object({
   name: z.string().min(1, "Tên đối tác là bắt buộc."),
@@ -24,6 +26,7 @@ export const schema = z.object({
   type: z.string().optional(),
   id: z.string().optional(),
   isActive: z.boolean(),
+  contactIds: z.array(z.string()).default([]),
 });
 
 export const initFormValues = {
@@ -33,6 +36,7 @@ export const initFormValues = {
   description: "",
   type: "",
   isActive: true,
+  contactIds: [],
 };
 
 interface PartnerPanelProps {
@@ -51,6 +55,8 @@ const PartnerPanel = ({
   onSubmit,
   form,
 }: PartnerPanelProps) => {
+  const { contactOptions } = useGetOptions();
+
   return (
     <Panel
       formId="partnerForm"
@@ -124,6 +130,30 @@ const PartnerPanel = ({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="contactIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Danh sách liên hệ</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    placeholder="Chọn liên hệ"
+                    options={contactOptions}
+                    value={contactOptions.filter((item) =>
+                      (field.value ?? []).includes?.(item.value)
+                    )}
+                    onChange={(options) =>
+                      field.onChange(options.map((item) => item.value))
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="address"

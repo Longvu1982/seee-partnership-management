@@ -6,8 +6,12 @@ export type TloginRead = Omit<User, 'password'>;
 export type TloginRequest = Pick<User, 'username' | 'password'>;
 
 // _____________  Partner Types  _____________
-export type TPartnerCreate = Pick<Partner, 'name' | 'description' | 'sector' | 'address' | 'type'>;
-export type TPartnerUpdate = Partial<Pick<Partner, 'name' | 'description' | 'sector' | 'address' | 'type'>>;
+export type TPartnerCreate = Pick<Partner, 'name' | 'description' | 'sector' | 'address' | 'type'> & {
+  contactIds: string[];
+};
+export type TPartnerUpdate = Partial<Pick<Partner, 'name' | 'description' | 'sector' | 'address' | 'type'>> & {
+  contactIds: string[];
+};
 
 export type TContactCreate = Pick<Contact, 'name' | 'email' | 'phone' | 'description'>;
 export type TContactUpdate = Partial<TContactCreate>;

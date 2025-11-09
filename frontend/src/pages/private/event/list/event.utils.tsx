@@ -34,7 +34,7 @@ export const eventStatusOptions = Object.values(EventStatus).map((status) => ({
   label: "",
 }));
 
-export const useGetPartnerAndContactOptions = () => {
+export const useGetOptions = () => {
   const [partnerOptions, setPartnerOptions] = useState<
     {
       value: string;

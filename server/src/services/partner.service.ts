@@ -3,21 +3,35 @@ import { QueryDataModel, TPartnerCreate, TPartnerUpdate } from '../types/general
 import { db } from '../utils/db.server';
 
 export const createPartner = async (data: TPartnerCreate): Promise<Partner> => {
+  const { contactIds = [], ...rest } = data;
   return db.partner.create({
     data: {
-      name: data.name,
-      description: data.description,
-      sector: data.sector,
-      address: data.address,
-      type: data.type,
+      ...rest,
+      partnerContacts: { create: contactIds.map((contactId) => ({ contact: { connect: { id: contactId } } })) },
     },
   });
 };
 
 export const updatePartner = async (id: string, data: TPartnerUpdate): Promise<Partner> => {
+  const { contactIds = [], ...rest } = data;
   return db.partner.update({
     where: { id },
-    data,
+    data: {
+      ...rest,
+      partnerContacts: {
+        deleteMany: {},
+        create: contactIds.map((contactId) => ({
+          contact: { connect: { id: contactId } },
+        })),
+      },
+    },
+  });
+};
+
+export const updatePartnerStatus = async (id: string, isActive: boolean): Promise<Partner> => {
+  return db.partner.update({
+    where: { id },
+    data: { isActive },
   });
 };
 
@@ -28,7 +42,13 @@ export const listPartners = async (model: QueryDataModel): Promise<{ totalCount:
   const query: Prisma.PartnerFindManyArgs = {
     where: {},
     orderBy: {},
-    include: {},
+    include: {
+      partnerContacts: {
+        include: {
+          contact: true,
+        },
+      },
+    },
   };
 
   if (pageSize) {

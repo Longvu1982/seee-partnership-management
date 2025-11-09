@@ -23,6 +23,17 @@ export const updatePartner = async (request: Request, response: Response, next: 
   }
 };
 
+export const updatePartnerStatus = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { id } = request.params;
+    const { isActive } = request.body;
+    const partner = await PartnerService.updatePartnerStatus(id, isActive);
+    return sendSuccessResponse(response, partner);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const listPartners = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const query = request.body;

@@ -54,6 +54,10 @@ export type PartnerResponse = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  partnerContacts?: {
+    id: string;
+    contact: ContactResponse;
+  }[];
 };
 
 export type EventResponse = {
@@ -103,7 +107,7 @@ export type EventListResponse = ApiListResponse<{ events: EventResponse[] }>;
 export type PartnerFormValues = Omit<
   PartnerResponse,
   "id" | "createdAt" | "updatedAt"
-> & { id?: string };
+> & { id?: string; contactIds: string[] };
 
 export type EventFormValues = Omit<
   EventResponse,

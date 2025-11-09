@@ -28,7 +28,7 @@ import { z } from "zod";
 import {
   eventStatusOptions,
   getEventStatusBadge,
-  useGetPartnerAndContactOptions,
+  useGetOptions,
 } from "../event.utils";
 import { Badge } from "@/components/ui/badge";
 import MultipleSelector from "@/components/multi-select/MutipleSelect";
@@ -83,7 +83,7 @@ const EventPanel = ({
   onSubmit,
   form,
 }: EventPanelProps) => {
-  const { partnerOptions, contactOptions } = useGetPartnerAndContactOptions();
+  const { partnerOptions, contactOptions } = useGetOptions();
 
   return (
     <Panel

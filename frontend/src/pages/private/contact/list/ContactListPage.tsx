@@ -180,7 +180,7 @@ const ContactListPage = () => {
   return (
     <>
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
-        Danh sách liên hệ nhà trường
+        Danh sách liên hệ
       </h3>
 
       <Button
