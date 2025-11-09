@@ -1,4 +1,4 @@
-import type { Role } from "../enum/app-enum";
+import type { EventStatus, Role } from "../enum/app-enum";
 
 export type QueryDataModel = {
   pagination: {
@@ -60,9 +60,9 @@ export type EventResponse = {
   id: string;
   title: string;
   description: string | null;
-  startDate: string | null;
-  endDate: string | null;
-  status: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  status: EventStatus;
   documents: string[];
   funding_amount: number | null;
   funding_currency: string | null;
@@ -71,6 +71,12 @@ export type EventResponse = {
   feedback: string | null;
   rating: number | null;
   userId: string;
+  eventContacts?: {
+    contact: ContactResponse;
+  }[];
+  partnerEvents?: {
+    partner: PartnerResponse;
+  }[];
   createdAt: string;
   updatedAt: string;
 };
@@ -95,6 +101,21 @@ export type PartnerFormValues = Omit<
   PartnerResponse,
   "id" | "createdAt" | "updatedAt"
 > & { id?: string };
+
+export type EventFormValues = Omit<
+  EventResponse,
+  "id" | "createdAt" | "updatedAt"
+> & { id?: string; partnerIds: string[]; contactIds: string[] };
+
+export type ContactFormValues = Omit<
+  ContactResponse,
+  "id" | "createdAt" | "updatedAt"
+> & { id?: string };
+export type ContactCreateResponse = ApiResponse<ContactResponse>;
+export type ContactUpdateResponse = ApiResponse<ContactResponse>;
+
+export type EventCreateResponse = ApiResponse<EventResponse>;
+export type EventUpdateResponse = ApiResponse<EventResponse>;
 
 export type ApiResponse<T> = {
   success: boolean;

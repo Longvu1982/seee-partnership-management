@@ -2,6 +2,9 @@ import ApiService from "../APIService";
 import type {
   QueryDataModel,
   EventListResponse,
+  EventFormValues,
+  EventCreateResponse,
+  EventUpdateResponse,
 } from "@/types/model/app-model";
 import type { AxiosResponse } from "axios";
 
@@ -12,5 +15,26 @@ export async function apiListEvents(
     url: "/event/list",
     method: "post",
     data: query,
+  });
+}
+
+export async function apiCreateEvent(
+  data: EventFormValues
+): Promise<AxiosResponse<EventCreateResponse>> {
+  return ApiService.fetchData<EventCreateResponse>({
+    url: "/event",
+    method: "post",
+    data,
+  });
+}
+
+export async function apiUpdateEvent(
+  data: EventFormValues
+): Promise<AxiosResponse<EventUpdateResponse>> {
+  const { id, ...updateData } = data;
+  return ApiService.fetchData<EventUpdateResponse>({
+    url: `/event/${id}`,
+    method: "put",
+    data: updateData,
   });
 }

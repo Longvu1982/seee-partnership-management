@@ -2,3 +2,19 @@ export enum Role {
   ADMIN = "ADMIN",
   USER = "USER",
 }
+
+export enum EventStatus {
+  PROSPECT = "PROSPECT",
+  PENDING = "PENDING",
+  ACTIVE = "ACTIVE",
+  CLOSED = "CLOSED",
+  TERMINATED = "TERMINATED",
+}
+
+export enum Department {
+  ELECTRICAL = "ELECTRICAL",
+  ELECTRONIC = "ELECTRONIC",
+  COMMUNICATION = "COMMUNICATION",
+  AUTOMATION = "AUTOMATION",
+  SCHOOLOFFICE = "SCHOOLOFFICE",
+}

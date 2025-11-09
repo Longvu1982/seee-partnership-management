@@ -3,14 +3,30 @@ import type { EnhancedColumnDef } from "@/components/data-table/dataTable.utils"
 import { Button } from "@/components/ui/button";
 import { useGetInitData } from "@/hooks/use-get-init-data";
 import { usePagination } from "@/hooks/use-pagination";
-import { apiListContacts } from "@/services/main/contactServices";
+import { useTriggerLoading } from "@/hooks/use-trigger-loading";
+import {
+  apiCreateContact,
+  apiListContacts,
+  apiUpdateContact,
+} from "@/services/main/contactServices";
 import {
   initQueryParams,
-  type QueryDataModel,
+  type ContactFormValues,
   type ContactResponse,
+  type QueryDataModel,
 } from "@/types/model/app-model";
-import { Edit, Trash } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Edit, PlusCircle, Trash } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import ContactPanel, {
+  initFormValues as contactInitFormValues,
+  schema as contactSchema,
+  initFormValues,
+} from "./panel/ContactPanel";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const columns: EnhancedColumnDef<ContactResponse>[] = [
   {
@@ -18,6 +34,29 @@ const columns: EnhancedColumnDef<ContactResponse>[] = [
     header: "STT",
     cell: ({ row }) => {
       return <div>{row.index + 1}</div>;
+    },
+  },
+  {
+    header: "Trạng thái",
+    accessorKey: "isActive",
+    cell: ({ getValue, table, row }) => {
+      const onActiveStateChange = table.options.meta?.onActiveStateChange;
+      const isActive = getValue() as boolean;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Switch
+            id={row.original.id}
+            checked={isActive}
+            onCheckedChange={(value) =>
+              onActiveStateChange?.(row.original, value)
+            }
+          />
+          <Label htmlFor={row.original.id} className="font-medium w-[75px]">
+            {isActive ? "Hoạt động" : "Tạm ngưng"}
+          </Label>
+        </div>
+      );
     },
   },
   {
@@ -35,6 +74,11 @@ const columns: EnhancedColumnDef<ContactResponse>[] = [
   {
     accessorKey: "description",
     header: "Mô tả",
+    cell: ({ getValue }) => (
+      <span className="whitespace-pre-line block min-w-[100px]">
+        {getValue() as string}
+      </span>
+    ),
   },
   {
     id: "actions",
@@ -65,6 +109,17 @@ const ContactListPage = () => {
   const [contactList, setContactList] = useState<ContactResponse[]>([]);
   const [queryParams, setQueryParams] =
     useState<QueryDataModel>(initQueryParams);
+  const [panelState, setPanelState] = useState<{
+    isOpen: boolean;
+    type: "create" | "edit";
+  }>({ isOpen: false, type: "create" });
+
+  const { triggerLoading } = useTriggerLoading();
+
+  const form = useForm({
+    resolver: zodResolver(contactSchema),
+    defaultValues: { ...contactInitFormValues },
+  });
 
   const getContactList = async (params: QueryDataModel) => {
     const { data } = await apiListContacts(params);
@@ -81,6 +136,40 @@ const ContactListPage = () => {
     }
   };
 
+  const onCreateUpdateContact = async (data: ContactFormValues) => {
+    const method =
+      panelState.type === "create" ? apiCreateContact : apiUpdateContact;
+
+    await triggerLoading(async () => {
+      const resp = await method(data);
+      if (resp.data?.success) {
+        toast.success(
+          panelState.type === "create"
+            ? "Thêm liên hệ thành công"
+            : "Cập nhật liên hệ thành công"
+        );
+        setPanelState((prev) => ({ ...prev, isOpen: false }));
+        await getContactList(queryParams);
+      }
+    });
+  };
+
+  const onEditClick = (row: ContactResponse) => {
+    form.reset({ ...row });
+    setPanelState({ isOpen: true, type: "edit" });
+  };
+
+  const onActiveStateChange = async (
+    row: ContactResponse,
+    isActive: boolean
+  ) => {
+    await triggerLoading(async () => {
+      const { data } = await apiUpdateContact({ ...row, isActive });
+      if (data.success) toast.success("Thay đổi trạng thái thành công");
+      await getContactList(queryParams);
+    });
+  };
+
   const { onPaginationChange } = usePagination({
     queryParams,
     fetchData: getContactList,
@@ -89,15 +178,47 @@ const ContactListPage = () => {
   useGetInitData(() => getContactList(initQueryParams));
 
   return (
-    <div className="overflow-x-auto">
-      <DataTable
-        data={contactList}
-        columns={columns}
-        manualPagination
-        pagination={queryParams.pagination}
-        onPaginationChange={onPaginationChange}
+    <>
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
+        Danh sách liên hệ nhà trường
+      </h3>
+
+      <Button
+        size="sm"
+        className="mb-6"
+        onClick={() => {
+          setPanelState((prev) => ({
+            ...prev,
+            type: "create",
+            isOpen: true,
+          }));
+          form.reset({ ...initFormValues });
+        }}
+      >
+        <PlusCircle /> Thêm liên hệ
+      </Button>
+
+      <p className="">
+        Số lượng: <strong>{queryParams.pagination.totalCount}</strong>
+      </p>
+
+      <div className="overflow-x-auto">
+        <DataTable
+          data={contactList}
+          columns={columns}
+          manualPagination
+          pagination={queryParams.pagination}
+          onPaginationChange={onPaginationChange}
+          meta={{ onEditClick, onActiveStateChange }}
+        />
+      </div>
+      <ContactPanel
+        form={form}
+        panelState={panelState}
+        setIsOpen={(isOpen) => setPanelState((prev) => ({ ...prev, isOpen }))}
+        onSubmit={onCreateUpdateContact}
       />
-    </div>
+    </>
   );
 };
 

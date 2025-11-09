@@ -21,7 +21,7 @@ const menus: TMenuItem[] = [
   },
   {
     type: "single",
-    title: "Danh sách liên hệ",
+    title: "Danh sách liên hệ (nhà trường)",
     role: [],
     link: "/contact-list",
     level: 1,
@@ -48,7 +48,7 @@ const MainSidebar = () => {
 
   return (
     <Sidebar>
-      <div className="text-center py-3 border-b mb-3">
+      <div className="text-center h-12 flex items-center justify-center border-b mb-3">
         <span className="font-semibold">SEEE Partnership Management</span>
       </div>
       <SidebarContent>

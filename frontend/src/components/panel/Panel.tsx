@@ -31,7 +31,12 @@ const Panel: FC<PanelProps> = ({
   description,
 }) => {
   return (
-    <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
+    <Drawer
+      direction="right"
+      open={open}
+      onOpenChange={onOpenChange}
+      onRelease={(e) => e.preventDefault()}
+    >
       {trigger && <DrawerTrigger>{trigger}</DrawerTrigger>}
       <DrawerContent
         onInteractOutside={(e) => e.preventDefault()}

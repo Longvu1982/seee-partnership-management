@@ -11,3 +11,22 @@ export const listContacts = async (request: Request, response: Response, next: N
     next(error);
   }
 };
+
+export const createContact = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const contact = await ContactService.createContact(request.body);
+    return sendSuccessResponse(response, contact);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+export const updateContact = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { id } = request.params;
+    const contact = await ContactService.updateContact(id, request.body);
+    return sendSuccessResponse(response, contact);
+  } catch (error: any) {
+    next(error);
+  }
+};

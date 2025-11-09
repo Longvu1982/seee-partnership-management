@@ -5,5 +5,7 @@ import { protectAuth } from '../middleware/auth-middleware';
 const router = express.Router();
 
 router.post('/list', protectAuth, ContactController.listContacts);
+router.post('/', protectAuth, ContactController.createContact);
+router.put('/:id', protectAuth, ContactController.updateContact);
 
 export default router;

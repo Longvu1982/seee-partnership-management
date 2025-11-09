@@ -20,7 +20,7 @@ const spinnerVariants = cva("text-muted-foreground animate-spin", {
 });
 
 const overlayVariants = cva(
-  "fixed inset-0 z-[1000] flex items-center justify-center bg-background/50",
+  "fixed inset-0 z-[1000] flex items-center justify-center bg-background/20",
   {
     variants: {
       fullPage: {

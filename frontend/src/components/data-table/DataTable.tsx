@@ -33,6 +33,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { DataTablePagination } from "./DataTablePagination";
+import { useLoading } from "@/store/loading";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -70,6 +71,8 @@ export function DataTable<TData extends DefaultData, TValue>({
     pageSize: 20, //default page size
     totalCount: undefined,
   });
+
+  const { isLoading } = useLoading();
 
   const [internalRowSelection, setInternalRowSelection] =
     useState<RowSelectionState>({});
@@ -183,6 +186,8 @@ export function DataTable<TData extends DefaultData, TValue>({
 
   const table = useReactTable(tableSettings);
 
+  if (isLoading) return null;
+
   if (!table.getRowModel().rows?.length)
     return <p className="text-left mb-4">Không có dữ liệu</p>;
 
@@ -207,7 +212,7 @@ export function DataTable<TData extends DefaultData, TValue>({
                       <TableHead
                         key={header.id}
                         className={cn(
-                          "border-l border-r dark:border-gray-700",
+                          "border-l border-r dark:border-gray-700 whitespace-nowrap",
                           fixed
                             ? "sticky right-0 bg-background shadow-md hover:bg-muted/50"
                             : ""

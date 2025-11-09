@@ -19,5 +19,6 @@ declare module "@tanstack/table-core" {
     onChangeOrderCheckBox: (id: string, checked: boolean) => void;
     onReload: () => Promise<void>;
     copyToClipBoard: CopyFn;
+    onActiveStateChange: (data: TData, value: boolean) => Promise<A>;
   }
 }

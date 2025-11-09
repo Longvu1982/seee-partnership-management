@@ -1,5 +1,5 @@
 import { Prisma, Contact } from '@prisma/client';
-import { QueryDataModel } from '../types/general';
+import { QueryDataModel, TContactCreate, TContactUpdate } from '../types/general';
 import { db } from '../utils/db.server';
 
 export const listContacts = async (model: QueryDataModel): Promise<{ totalCount: number; contacts: Contact[] }> => {
@@ -49,4 +49,12 @@ export const listContacts = async (model: QueryDataModel): Promise<{ totalCount:
   ]);
 
   return { totalCount, contacts };
+};
+
+export const createContact = async (data: TContactCreate): Promise<Contact> => {
+  return db.contact.create({ data });
+};
+
+export const updateContact = async (id: string, data: TContactUpdate): Promise<Contact> => {
+  return db.contact.update({ where: { id }, data });
 };

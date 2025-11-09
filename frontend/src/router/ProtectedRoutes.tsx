@@ -24,7 +24,7 @@ const ProtectedRoutes = () => {
             <AvatarMenu />
           </div>
         </header>
-        <main className="p-4">
+        <main className="p-4 md:px-8 md:py-6">
           <Suspense fallback={<Spinner show={true} />} key={location.key}>
             <Outlet />
           </Suspense>

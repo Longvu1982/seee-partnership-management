@@ -12,58 +12,56 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { PartnerFormValues } from "@/types/model/app-model";
+import type { ContactFormValues } from "@/types/model/app-model";
 import { type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export const schema = z.object({
-  name: z.string().min(1, "Tên đối tác là bắt buộc."),
-  sector: z.string().optional(),
-  address: z.string().optional(),
+  name: z.string().min(1, "Tên liên hệ là bắt buộc."),
+  email: z.union([
+    z.literal(""),
+    z.string().email("Cần nhập email đúng định dạng"),
+  ]),
+  phone: z.string().optional(),
   description: z.string().optional(),
-  type: z.string().optional(),
   id: z.string().optional(),
   isActive: z.boolean(),
 });
 
-export const initFormValues = {
+export const initFormValues: ContactFormValues = {
   name: "",
-  sector: "",
-  address: "",
+  email: "",
+  phone: "",
   description: "",
-  type: "",
   isActive: true,
 };
 
-interface PartnerPanelProps {
-  panelState: {
-    isOpen: boolean;
-    type: "create" | "edit";
-  };
-  setIsOpen: (value: boolean) => void;
-  onSubmit: (data: PartnerFormValues) => void;
-  form: UseFormReturn<PartnerFormValues, A, PartnerFormValues>;
+interface ContactPanelProps {
+  panelState: { isOpen: boolean; type: "create" | "edit" };
+  setIsOpen: (open: boolean) => void;
+  onSubmit: (data: ContactFormValues) => void;
+  form: UseFormReturn<ContactFormValues, A, ContactFormValues>;
 }
 
-const PartnerPanel = ({
+const ContactPanel = ({
   panelState,
   setIsOpen,
   onSubmit,
   form,
-}: PartnerPanelProps) => {
+}: ContactPanelProps) => {
   return (
     <Panel
-      formId="partnerForm"
+      formId="contactForm"
       title={
-        panelState.type === "create" ? "Tạo đối tác mới" : "Chỉnh sửa thông tin"
+        panelState.type === "create" ? "Thêm liên hệ" : "Chỉnh sửa liên hệ"
       }
-      description="Điền thông tin"
+      description="Nhập thông tin liên hệ."
       open={panelState.isOpen}
       onOpenChange={setIsOpen}
     >
       <Form {...form}>
         <form
-          id="partnerForm"
+          id="contactForm"
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-4 p-4"
         >
@@ -101,7 +99,33 @@ const PartnerPanel = ({
               <FormItem>
                 <FormLabel>Tên</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nhập tên đối tác" {...field} />
+                  <Input placeholder="Tên liên hệ" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>SĐT</FormLabel>
+                <FormControl>
+                  <Input placeholder="Số điện thoại" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -115,49 +139,11 @@ const PartnerPanel = ({
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Nhập mô tả"
+                    spellCheck={false}
+                    placeholder="Mô tả"
                     {...field}
                     value={field.value as string}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Địa chỉ</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nhập địa chỉ" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="sector"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Lĩnh vực</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nhập lĩnh vực" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Loại</FormLabel>
-                <FormControl>
-                  <Input placeholder="Doanh nghiệp, Cá nhân, ..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -169,4 +155,4 @@ const PartnerPanel = ({
   );
 };
 
-export default PartnerPanel;
+export default ContactPanel;

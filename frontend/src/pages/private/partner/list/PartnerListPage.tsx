@@ -21,6 +21,8 @@ import { useForm } from "react-hook-form";
 import PartnerPanel, { initFormValues, schema } from "./panel/PartnerPanel";
 import { useTriggerLoading } from "@/hooks/use-trigger-loading";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
@@ -28,6 +30,29 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
     header: "STT",
     cell: ({ row }) => {
       return <div>{row.index + 1}</div>;
+    },
+  },
+  {
+    header: "Trạng thái",
+    accessorKey: "isActive",
+    cell: ({ getValue, table, row }) => {
+      const onActiveStateChange = table.options.meta?.onActiveStateChange;
+      const isActive = getValue() as boolean;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Switch
+            id={row.original.id}
+            checked={isActive}
+            onCheckedChange={(value) =>
+              onActiveStateChange?.(row.original, value)
+            }
+          />
+          <Label htmlFor={row.original.id} className="font-medium w-[75px]">
+            {isActive ? "Hoạt động" : "Tạm ngưng"}
+          </Label>
+        </div>
+      );
     },
   },
   {
@@ -49,6 +74,11 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
     accessorKey: "description",
     header: "Mô tả",
+    cell: ({ getValue }) => (
+      <span className="whitespace-pre-line block min-w-[100px]">
+        {getValue() as string}
+      </span>
+    ),
   },
   {
     id: "actions",
@@ -110,6 +140,7 @@ const PartnerListPage = () => {
     await triggerLoading(async () => {
       const promise =
         panelState.type === "create" ? apiCreatePartner : apiUpdatePartner;
+
       await promise(data);
 
       toast.success(
@@ -126,6 +157,17 @@ const PartnerListPage = () => {
   const onEditClick = (data: PartnerResponse) => {
     form.reset({ ...data });
     setPanelState((prev) => ({ ...prev, isOpen: true, type: "edit" }));
+  };
+
+  const onActiveStateChange = async (
+    row: PartnerResponse,
+    isActive: boolean
+  ) => {
+    await triggerLoading(async () => {
+      const { data } = await apiUpdatePartner({ ...row, isActive });
+      if (data.success) toast.success("Thay đổi trạng thái thành công");
+      await getPartnerList(queryParams);
+    });
   };
 
   const { onPaginationChange } = usePagination({
@@ -156,7 +198,7 @@ const PartnerListPage = () => {
         <PlusCircle /> Thêm đối tác
       </Button>
 
-      <p className="mb-4">
+      <p className="">
         Số lượng: <strong>{queryParams.pagination.totalCount}</strong>
       </p>
 
@@ -167,7 +209,7 @@ const PartnerListPage = () => {
           manualPagination
           pagination={queryParams.pagination}
           onPaginationChange={onPaginationChange}
-          meta={{ onEditClick }}
+          meta={{ onEditClick, onActiveStateChange }}
         />
       </div>
 

@@ -1,16 +1,28 @@
 import { DataTable } from "@/components/data-table/DataTable";
 import type { EnhancedColumnDef } from "@/components/data-table/dataTable.utils";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useGetInitData } from "@/hooks/use-get-init-data";
 import { usePagination } from "@/hooks/use-pagination";
-import { apiListEvents } from "@/services/main/eventServices";
+import { useTriggerLoading } from "@/hooks/use-trigger-loading";
+import {
+  apiCreateEvent,
+  apiListEvents,
+  apiUpdateEvent,
+} from "@/services/main/eventServices";
 import {
   initQueryParams,
-  type QueryDataModel,
+  type EventFormValues,
   type EventResponse,
+  type QueryDataModel,
 } from "@/types/model/app-model";
-import { Edit, Trash } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Edit, PlusCircle, Trash } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { getEventStatusBadge } from "./event.utils";
+import EventPanel, { initFormValues, schema } from "./panel/EventPanel";
 
 const columns: EnhancedColumnDef<EventResponse>[] = [
   {
@@ -31,6 +43,11 @@ const columns: EnhancedColumnDef<EventResponse>[] = [
   {
     accessorKey: "status",
     header: "Trạng thái",
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const { variant, text } = getEventStatusBadge(status);
+      return <Badge variant={variant}>{text}</Badge>;
+    },
   },
   {
     accessorKey: "startDate",
@@ -88,6 +105,18 @@ const EventListPage = () => {
   const [queryParams, setQueryParams] =
     useState<QueryDataModel>(initQueryParams);
 
+  const [panelState, setPanelState] = useState<{
+    isOpen: boolean;
+    type: "create" | "edit";
+  }>({ isOpen: false, type: "create" });
+
+  const { triggerLoading } = useTriggerLoading();
+
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { ...initFormValues },
+  });
+
   const getEventList = async (params: QueryDataModel) => {
     const { data } = await apiListEvents(params);
     if (data.success) {
@@ -103,6 +132,33 @@ const EventListPage = () => {
     }
   };
 
+  const onEditClick = (row: EventFormValues) => {
+    form.reset({
+      ...row,
+      startDate: row.startDate ? new Date(row.startDate) : null,
+      endDate: row.endDate ? new Date(row.endDate) : null,
+    });
+    setPanelState({ isOpen: true, type: "edit" });
+  };
+
+  const onCreateUpdate = async (data: EventFormValues) => {
+    const method =
+      panelState.type === "create" ? apiCreateEvent : apiUpdateEvent;
+
+    await triggerLoading(async () => {
+      const resp = await method(data);
+      if (resp.data?.success) {
+        toast.success(
+          panelState.type === "create"
+            ? "Thêm sự kiện thành công"
+            : "Cập nhật sự kiện thành công"
+        );
+        setPanelState((prev) => ({ ...prev, isOpen: false }));
+        await getEventList(queryParams);
+      }
+    });
+  };
+
   const { onPaginationChange } = usePagination({
     queryParams,
     fetchData: getEventList,
@@ -111,15 +167,48 @@ const EventListPage = () => {
   useGetInitData(() => getEventList(initQueryParams));
 
   return (
-    <div className="overflow-x-auto">
-      <DataTable
-        data={eventList}
-        columns={columns}
-        manualPagination
-        pagination={queryParams.pagination}
-        onPaginationChange={onPaginationChange}
+    <>
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">
+        Danh sách sự kiện
+      </h3>
+
+      <Button
+        size="sm"
+        className="mb-6"
+        onClick={() => {
+          setPanelState((prev) => ({
+            ...prev,
+            type: "create",
+            isOpen: true,
+          }));
+          form.reset({ ...initFormValues });
+        }}
+      >
+        <PlusCircle /> Thêm sự kiện
+      </Button>
+
+      <p className="">
+        Số lượng: <strong>{queryParams.pagination.totalCount}</strong>
+      </p>
+
+      <div className="overflow-x-auto">
+        <DataTable
+          data={eventList}
+          columns={columns}
+          manualPagination
+          pagination={queryParams.pagination}
+          onPaginationChange={onPaginationChange}
+          meta={{ onEditClick }}
+        />
+      </div>
+
+      <EventPanel
+        panelState={panelState}
+        form={form}
+        onSubmit={onCreateUpdate}
+        setIsOpen={(isOpen) => setPanelState((prev) => ({ ...prev, isOpen }))}
       />
-    </div>
+    </>
   );
 };
 

@@ -12,7 +12,7 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
+  id           String        @id @default(uuid())
   username     String        @unique
   password     String
   name         String
@@ -28,7 +28,7 @@ model User {
 }
 
 model Contact {
-  id              String           @id @default(cuid())
+  id              String           @id @default(uuid())
   name            String
   email           String?
   phone           String?
@@ -39,7 +39,7 @@ model Contact {
 }
 
 model Partner {
-  id          String  @id @default(cuid())
+  id          String  @id @default(uuid())
   name        String
   description String?
   sector      String?
@@ -57,7 +57,7 @@ model Partner {
 
 // Many-to-many (User ↔ Partner)
 model UserPartner {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   partnerId String
   createdAt DateTime @default(now())
@@ -71,7 +71,7 @@ model UserPartner {
 
 // Many-to-many (Event ↔ Partner)
 model PartnerEvent {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   partnerId String
   eventId   String
   createdAt DateTime @default(now())
@@ -85,7 +85,7 @@ model PartnerEvent {
 
 // Many-to-many (Event ↔ Contact)
 model EventContact {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   eventId   String
   contactId String
   createdAt DateTime @default(now())
@@ -99,7 +99,7 @@ model EventContact {
 
 // Many-to-many (Partner ↔ Contact)
 model PartnerContact {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   partnerId String
   contactId String
   createdAt DateTime @default(now())
@@ -112,7 +112,7 @@ model PartnerContact {
 }
 
 model Event {
-  id                    String      @id @default(cuid())
+  id                    String      @id @default(uuid())
   title                 String
   description           String?
   startDate             DateTime?
