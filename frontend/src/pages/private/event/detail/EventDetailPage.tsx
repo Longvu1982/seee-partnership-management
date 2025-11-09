@@ -5,6 +5,7 @@ import { useTriggerLoading } from "@/hooks/use-trigger-loading";
 import { apiGetEventById } from "@/services/main/eventServices";
 import type { EventResponse } from "@/types/model/app-model";
 import { useContactListModal } from "@/utils/contact-list-modal";
+import { format } from "date-fns";
 import {
   ArrowLeft,
   Calendar,
@@ -14,13 +15,14 @@ import {
   MessageSquare,
   Phone,
   Star,
-  Users,
   UserCircle,
+  Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { getEventStatusBadge } from "../list/event.utils";
+import { vi } from "date-fns/locale";
 
 function StarRating({
   rating,
@@ -93,10 +95,13 @@ const EventDetailPage = () => {
 
   const formatDate = (date: Date | string | null) => {
     if (!date) return "-";
-    return new Date(date).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return format(new Date(date), "d 'tháng' M, yyyy", { locale: vi });
+  };
+
+  const formatDateTime = (date: Date | string | null) => {
+    if (!date) return "-";
+    return format(new Date(date), "HH:mm 'ngày' d 'tháng' M, yyyy", {
+      locale: vi,
     });
   };
 
@@ -135,7 +140,7 @@ const EventDetailPage = () => {
 
         {/* Event Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="flex items-center gap-3 p-4  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 p-4  rounded-lg border border-border">
             <Calendar className="w-5 h-5 text-primary" />
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -146,7 +151,7 @@ const EventDetailPage = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-4  rounded-lg border border-white shadow-md">
+          <div className="flex items-center gap-3 p-4  rounded-lg border border-border">
             <Calendar className="w-5 h-5 text-primary" />
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -160,7 +165,7 @@ const EventDetailPage = () => {
         </div>
 
         {/* Event Description */}
-        <div className="p-6  rounded-lg border border-white shadow-md">
+        <div className="p-6  rounded-lg border border-border">
           <h2 className="text-2xl font-bold text-foreground mb-2">
             Mô tả sự kiện
           </h2>
@@ -172,7 +177,7 @@ const EventDetailPage = () => {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-        <div className="p-6  rounded-lg border border-white shadow-md">
+        <div className="p-6  rounded-lg border border-border">
           <div className="flex items-center gap-3 mb-2">
             <Users className="w-5 h-5 text-primary" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -183,7 +188,7 @@ const EventDetailPage = () => {
             {eventData.student_reach_planned}
           </p>
         </div>
-        <div className="p-6  rounded-lg border border-white shadow-md">
+        <div className="p-6  rounded-lg border border-border">
           <div className="flex items-center gap-3 mb-2">
             <Users className="w-5 h-5 text-primary" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -194,7 +199,7 @@ const EventDetailPage = () => {
             {eventData.student_reach_actual}
           </p>
         </div>
-        <div className="p-6  rounded-lg border border-white shadow-md">
+        <div className="p-6  rounded-lg border border-border">
           <div className="flex items-center gap-3 mb-2">
             <DollarSign className="w-5 h-5 text-primary" />
             <span className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -203,10 +208,8 @@ const EventDetailPage = () => {
           </div>
           <p className="text-2xl font-bold text-card-foreground">
             {formatCurrency(
-              // eventData.funding_amount,
-              // eventData.funding_currency
-              100000,
-              "USD"
+              eventData.funding_amount,
+              eventData.funding_currency
             )}
             {/* {eventData.funding_currency} */}
           </p>
@@ -216,7 +219,7 @@ const EventDetailPage = () => {
       {/* Rating and Feedback Section */}
       <section className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Rating Card */}
-        <div className="p-6  rounded-lg border border-white shadow-md">
+        <div className="p-6  rounded-lg border border-border">
           <div className="flex items-center gap-3 mb-4">
             <Star className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">
@@ -230,7 +233,7 @@ const EventDetailPage = () => {
         </div>
 
         {/* Feedback Card */}
-        <div className="p-6  rounded-lg border border-white shadow-md">
+        <div className="p-6  rounded-lg border border-border">
           <div className="flex items-center gap-3 mb-4">
             <MessageSquare className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">Nhận xét</h3>
@@ -257,7 +260,7 @@ const EventDetailPage = () => {
             eventData.eventContacts.map((ec) => (
               <div
                 key={ec.id}
-                className="p-6  rounded-lg border border-white shadow-md hover:border-primary/50 transition-colors"
+                className="p-6  rounded-lg border border-border hover:border-primary/50 transition-colors"
               >
                 <div className="flex items-start justify-between mb-4 flex-col md:flex-row gap-4">
                   <div>
@@ -336,7 +339,7 @@ const EventDetailPage = () => {
             eventData.partnerEvents.map((pe) => (
               <div
                 key={pe.id}
-                className="p-6  rounded-lg border border-white shadow-md hover:border-primary/50 transition-colors cursor-pointer"
+                className="p-6  rounded-lg border border-border hover:border-primary/50 transition-colors cursor-pointer"
                 onClick={() => openContactListModal(pe.partner)}
               >
                 <div className="flex items-start justify-between mb-3 flex-col sm:flex-row gap-2">
@@ -413,7 +416,7 @@ const EventDetailPage = () => {
       </section>
 
       {/* Event Metadata */}
-      <section className="p-6  rounded-lg border border-white shadow-md">
+      <section className="p-6  rounded-lg border border-border">
         <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide mb-4">
           Thông tin sự kiện
         </h3>
@@ -433,13 +436,13 @@ const EventDetailPage = () => {
           <div>
             <p className="text-muted-foreground">Tạo lúc</p>
             <p className="text-card-foreground">
-              {formatDate(eventData.createdAt)}
+              {formatDateTime(eventData.createdAt)}
             </p>
           </div>
           <div>
             <p className="text-muted-foreground">Cập nhật lúc</p>
             <p className="text-card-foreground">
-              {formatDate(eventData.updatedAt)}
+              {formatDateTime(eventData.updatedAt)}
             </p>
           </div>
         </div>

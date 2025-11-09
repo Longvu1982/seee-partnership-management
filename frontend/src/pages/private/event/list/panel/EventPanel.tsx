@@ -32,6 +32,8 @@ import {
 } from "../event.utils";
 import { Badge } from "@/components/ui/badge";
 import MultipleSelector from "@/components/multi-select/MutipleSelect";
+import { CurrencySelect, type Currency } from "@/components/ui/currency-select";
+import { useState } from "react";
 
 export const schema = z.object({
   id: z.string().optional(),
@@ -64,7 +66,7 @@ export const initFormValues: EventFormValues = {
   funding_currency: "",
   rating: 0,
   student_reach_actual: 0,
-  student_reach_planned: 1,
+  student_reach_planned: 0,
   userId: "",
   contactIds: [],
   partnerIds: [],
@@ -84,6 +86,15 @@ const EventPanel = ({
   form,
 }: EventPanelProps) => {
   const { partnerOptions, contactOptions } = useGetOptions();
+
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency | null>(
+    null
+  );
+
+  const handleCurrencySelect = (currency: Currency) => {
+    console.log("Selected Currency Object:", currency);
+    setSelectedCurrency(currency);
+  };
 
   return (
     <Panel
@@ -132,7 +143,7 @@ const EventPanel = ({
             }}
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-5">
             <FormField
               control={form.control}
               name="startDate"
@@ -218,6 +229,69 @@ const EventPanel = ({
               )}
             />
           </div>
+
+          <FormLabel>Quy mô tài chính</FormLabel>
+          <div className="flex items-center gap-2 -mt-2">
+            <FormField
+              control={form.control}
+              name="funding_currency"
+              render={({ field }) => (
+                <FormControl>
+                  <CurrencySelect
+                    onValueChange={field.onChange}
+                    onCurrencySelect={handleCurrencySelect}
+                    placeholder="Loại tiền"
+                    disabled={false}
+                    currencies="custom"
+                    variant="small"
+                    {...(field as A)}
+                  />
+                </FormControl>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="funding_amount"
+              render={({ field }) => (
+                <div className="relative w-full">
+                  <FormControl>
+                    <Input type="number" className="pr-10" {...field} />
+                  </FormControl>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm">
+                    {selectedCurrency?.symbol}
+                  </span>
+                </div>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="student_reach_planned"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sinh viên (dự kiến)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Số lượng" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="student_reach_actual"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sinh viên (thực tế)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Số lượng" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
