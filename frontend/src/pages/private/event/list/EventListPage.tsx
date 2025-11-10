@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/data-table/DataTable";
 import type { EnhancedColumnDef } from "@/components/data-table/dataTable.utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge, Badge as BadgeComponent } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useGetInitData } from "@/hooks/use-get-init-data";
 import { usePagination } from "@/hooks/use-pagination";
@@ -16,14 +16,15 @@ import {
   type EventResponse,
   type QueryDataModel,
 } from "@/types/model/app-model";
+import { useDocumentsModal } from "@/utils/documents-modal";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, PlusCircle, Trash } from "lucide-react";
+import { Edit, FileText, PlusCircle, Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { getEventStatusBadge } from "./event.utils";
 import EventPanel, { initFormValues, schema } from "./panel/EventPanel";
-import { Link } from "react-router-dom";
 
 const columns: EnhancedColumnDef<EventResponse>[] = [
   {
@@ -92,6 +93,46 @@ const columns: EnhancedColumnDef<EventResponse>[] = [
     },
   },
   {
+    accessorKey: "documents",
+    header: "Tài liệu",
+    cell: ({ row, table }) => {
+      const documents = row.original.documents ?? [];
+      const onViewDocuments = table.options.meta?.onViewDocuments;
+
+      if (!documents.length) {
+        return <span className="text-muted-foreground">Không có tài liệu</span>;
+      }
+
+      if (documents.length === 1) {
+        return (
+          <a
+            href={documents[0]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-primary hover:underline cursor-pointer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <FileText className="h-4 w-4 text-muted-foreground" />
+            <span>{documents[0]}</span>
+          </a>
+        );
+      }
+
+      return (
+        <div
+          className="flex items-center gap-2 cursor-pointer hover:opacity-75"
+          onClick={() => onViewDocuments?.(row.original)}
+        >
+          <FileText className="h-4 w-4 text-muted-foreground" />
+          <span>{documents[0]}</span>
+          <BadgeComponent className="rounded-full bg-gray-600 text-white flex items-center justify-between min-w-[26px] p-1">
+            <span>+{documents.length - 1}</span>
+          </BadgeComponent>
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     fixed: true,
     size: 120,
@@ -127,6 +168,7 @@ const EventListPage = () => {
   }>({ isOpen: false, type: "create" });
 
   const { triggerLoading } = useTriggerLoading();
+  const { openDocumentsModal } = useDocumentsModal();
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -181,6 +223,10 @@ const EventListPage = () => {
     });
   };
 
+  const onViewDocuments = (row: EventResponse) => {
+    openDocumentsModal(row.title, row.documents ?? []);
+  };
+
   const { onPaginationChange } = usePagination({
     queryParams,
     fetchData: getEventList,
@@ -222,7 +268,7 @@ const EventListPage = () => {
           manualPagination
           pagination={queryParams.pagination}
           onPaginationChange={onPaginationChange}
-          meta={{ onEditClick }}
+          meta={{ onEditClick, onViewDocuments }}
         />
       </div>
 

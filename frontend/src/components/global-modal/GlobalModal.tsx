@@ -27,7 +27,7 @@ export default function GlobalModal() {
         </AlertDialogHeader>
         <div className="text-gray-500">{meta.content}</div>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>
+          <AlertDialogCancel onClick={onCancel} className="cursor-pointer">
             {meta.cancelText}
           </AlertDialogCancel>
           {modalType === "confirm" && (

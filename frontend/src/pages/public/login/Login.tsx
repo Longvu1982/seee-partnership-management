@@ -53,11 +53,11 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex items-center justify-center min-h-screen bg-secondary">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full max-w-md p-8 space-y-6 rounded bg-secondary shadow-md"
+          className="w-full max-w-md p-8 space-y-6 rounded bg-background shadow-md"
         >
           <div className="space-y-2">
             <h2 className="text-center text-xs">Đăng nhập vào</h2>

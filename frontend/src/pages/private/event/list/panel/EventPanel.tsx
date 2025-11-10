@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { EventStatus } from "@/types/enum/app-enum";
 import type { EventFormValues } from "@/types/model/app-model";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -348,6 +348,59 @@ const EventPanel = ({
                     {...field}
                     value={field.value as string}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="documents"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tài liệu</FormLabel>
+                <FormControl>
+                  <div className="space-y-2">
+                    {(field.value ?? []).map((doc, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <Input
+                          wrapperClassname="flex-1"
+                          placeholder="Nhập link tài liệu"
+                          value={doc}
+                          onChange={(e) => {
+                            const newDocs = [...(field.value ?? [])];
+                            newDocs[index] = e.target.value;
+                            field.onChange(newDocs);
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            const newDocs = [...(field.value ?? [])];
+                            newDocs.splice(index, 1);
+                            field.onChange(newDocs);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        field.onChange([...(field.value ?? []), ""]);
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm tài liệu
+                    </Button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

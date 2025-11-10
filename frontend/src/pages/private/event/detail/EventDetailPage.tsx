@@ -1,3 +1,4 @@
+import { DocumentsTable } from "@/components/documents-table/DocumentsTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -6,10 +7,12 @@ import { apiGetEventById } from "@/services/main/eventServices";
 import type { EventResponse } from "@/types/model/app-model";
 import { useContactListModal } from "@/utils/contact-list-modal";
 import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
   ArrowLeft,
   Calendar,
   DollarSign,
+  FileText,
   Mail,
   MapPin,
   MessageSquare,
@@ -22,7 +25,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { getEventStatusBadge } from "../list/event.utils";
-import { vi } from "date-fns/locale";
 
 function StarRating({
   rating,
@@ -243,6 +245,35 @@ const EventDetailPage = () => {
           </p>
         </div>
       </section>
+
+      {/* Documents Section */}
+      {eventData.documents && eventData.documents.length > 0 && (
+        <section className="mb-12">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Tài liệu
+            </h2>
+            <p className="text-muted-foreground">
+              Danh sách tài liệu liên quan đến sự kiện
+            </p>
+          </div>
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <span className="font-semibold">
+                      {eventData.documents.length} tài liệu
+                    </span>
+                  </div>
+                </div>
+                <DocumentsTable documents={eventData.documents} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contacts Section */}
       <section className="mb-12">
