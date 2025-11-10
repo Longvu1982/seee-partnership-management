@@ -13,19 +13,26 @@ import {
   apiUpdatePartner,
   apiUpdatePartnerStatus,
 } from "@/services/main/partnerServices";
-import { useContactListModal } from "@/utils/contact-list-modal";
+import { PartnerRank, PartnerSector, PartnerType } from "@/types/enum/app-enum";
 import {
   initQueryParams,
   type PartnerFormValues,
   type PartnerResponse,
   type QueryDataModel,
 } from "@/types/model/app-model";
+import { useContactListModal } from "@/utils/contact-list-modal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit, PlusCircle, Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import PartnerPanel, { initFormValues, schema } from "./panel/PartnerPanel";
+import {
+  getPartnerRankIcon,
+  getPartnerRankLabel,
+  getPartnerSectorLabel,
+  getPartnerTypeLabel,
+} from "./partner.utils";
 
 const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
@@ -61,6 +68,9 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
     accessorKey: "name",
     header: "Tên đối tác",
+    cell: ({ getValue }) => (
+      <span className="block min-w-[100px]">{getValue() as string}</span>
+    ),
   },
   {
     accessorKey: "address",
@@ -69,10 +79,49 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
     accessorKey: "sector",
     header: "Lĩnh vực",
+    cell: ({ getValue, row }) => {
+      const sectors = (getValue() as PartnerSector[]) ?? [];
+      return (
+        <span>
+          {sectors
+            .map((s) => {
+              if (s === PartnerSector.OTHERS)
+                return row.original.otherSectorName;
+              return getPartnerSectorLabel(s);
+            })
+            .join(", ")}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "type",
     header: "Loại",
+    cell: ({ getValue, row }) => {
+      const type = getValue() as PartnerType;
+      if (type === PartnerType.OTHER) return row.original.otherTypeName;
+      return (
+        <span className="whitespace-nowrap">
+          {type ? getPartnerTypeLabel(type) : ""}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "rank",
+    header: "Hạng",
+    cell: ({ getValue, row }) => {
+      const rank = getValue() as PartnerRank;
+
+      return (
+        <span className="flex items-center whitespace-nowrap">
+          {rank ? getPartnerRankIcon(rank) : null}
+          {rank === PartnerRank.OTHER
+            ? row.original.otherRank
+            : getPartnerRankLabel(rank)}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "description",

@@ -18,3 +18,25 @@ export enum Department {
   AUTOMATION = "AUTOMATION",
   SCHOOLOFFICE = "SCHOOLOFFICE",
 }
+
+export enum PartnerType {
+  INDIVIDUAL = "INDIVIDUAL",
+  ORGANIZATION = "ORGANIZATION",
+  OTHER = "OTHER",
+}
+
+export enum PartnerSector {
+  ACADEMIC = "ACADEMIC",
+  INDUSTRY = "INDUSTRY",
+  NGO = "NGO",
+  GOVERNMENT = "GOVERNMENT",
+  OTHERS = "OTHERS",
+}
+
+export enum PartnerRank {
+  DIAMOND = "DIAMOND",
+  GOLD = "GOLD",
+  SILVER = "SILVER",
+  NOTYET = "NOTYET",
+  OTHER = "OTHER",
+}

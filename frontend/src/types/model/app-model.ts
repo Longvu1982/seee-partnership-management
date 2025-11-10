@@ -1,4 +1,10 @@
-import type { EventStatus, Role } from "../enum/app-enum";
+import type {
+  EventStatus,
+  Role,
+  PartnerRank,
+  PartnerSector,
+  PartnerType,
+} from "../enum/app-enum";
 
 export type QueryDataModel = {
   pagination: {
@@ -48,9 +54,13 @@ export type PartnerResponse = {
   id: string;
   name: string;
   description: string | null;
-  sector: string | null;
+  sector: PartnerSector[];
   address: string | null;
-  type: string | null;
+  type: PartnerType | null;
+  otherTypeName: string | null;
+  otherSectorName: string | null;
+  rank: PartnerRank | null;
+  otherRank: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

@@ -39,12 +39,16 @@ model Contact {
 }
 
 model Partner {
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-  sector      String?
-  address     String?
-  type        String?
+  id              String          @id @default(uuid())
+  name            String
+  description     String?
+  sector          PartnerSector[]
+  address         String?
+  type            PartnerType?
+  otherTypeName   String?
+  otherSectorName String?
+  rank            PartnerRank?
+  otherRank       String?
 
   userPartners    UserPartner[]
   partnerEvents   PartnerEvent[]
@@ -155,4 +159,26 @@ enum Department {
   COMMUNICATION
   AUTOMATION
   SCHOOLOFFICE
+}
+
+enum PartnerType {
+  INDIVIDUAL
+  ORGANIZATION
+  OTHER
+}
+
+enum PartnerSector {
+  ACADEMIC
+  INDUSTRY
+  NGO
+  GOVERNMENT
+  OTHERS
+}
+
+enum PartnerRank {
+  DIAMOND
+  GOLD
+  SILVER
+  NOTYET
+  OTHER
 }

@@ -1,4 +1,4 @@
-import { User, Partner, Contact, Event } from '@prisma/client';
+import { Contact, Event, Partner, User } from '@prisma/client';
 
 // _____________  User Types  _____________
 export type TUserRegisterWrite = Omit<User, 'createdAt' | 'updatedAt'>;
@@ -6,10 +6,27 @@ export type TloginRead = Omit<User, 'password'>;
 export type TloginRequest = Pick<User, 'username' | 'password'>;
 
 // _____________  Partner Types  _____________
-export type TPartnerCreate = Pick<Partner, 'name' | 'description' | 'sector' | 'address' | 'type'> & {
+export type TPartnerCreate = Pick<
+  Partner,
+  'name' | 'description' | 'address' | 'type' | 'sector' | 'otherTypeName' | 'otherSectorName' | 'rank' | 'otherRank'
+> & {
   contactIds: string[];
 };
-export type TPartnerUpdate = Partial<Pick<Partner, 'name' | 'description' | 'sector' | 'address' | 'type'>> & {
+export type TPartnerUpdate = Partial<
+  Pick<
+    Partner,
+    | 'name'
+    | 'description'
+    | 'address'
+    | 'type'
+    | 'sector'
+    | 'otherTypeName'
+    | 'otherSectorName'
+    | 'rank'
+    | 'otherRank'
+    | 'isActive'
+  >
+> & {
   contactIds: string[];
 };
 

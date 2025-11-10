@@ -72,7 +72,6 @@ export const listPartners = async (model: QueryDataModel): Promise<{ totalCount:
         { name: { contains: searchText, mode: 'insensitive' } },
         { description: { contains: searchText, mode: 'insensitive' } },
         { address: { contains: searchText, mode: 'insensitive' } },
-        { sector: { contains: searchText, mode: 'insensitive' } },
       ],
     };
   }
