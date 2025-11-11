@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import MultipleSelector from "@/components/multi-select/MutipleSelect";
 import Panel from "@/components/panel/Panel";
+import TagsInput from "@/components/tags-input/TagsInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -50,6 +51,7 @@ export const schema = z.object({
     .nativeEnum(PartnerSector)
     .array()
     .min(1, "Cần chọn ít nhất 1 lĩnh vực"),
+  tags: z.array(z.string()).optional(),
 });
 
 export const initFormValues: PartnerFormValues = {
@@ -64,6 +66,7 @@ export const initFormValues: PartnerFormValues = {
   sector: [],
   rank: PartnerRank.NOTYET,
   type: null,
+  tags: [],
 };
 
 interface PartnerPanelProps {
@@ -185,6 +188,26 @@ const PartnerPanel = ({
                 <FormMessage />
               </FormItem>
             )}
+          />
+
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Nhãn/từ khóa</FormLabel>
+                  <FormControl>
+                    <TagsInput
+                      tags={field.value}
+                      {...field}
+                      placeholder="Thêm nhãn"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField

@@ -61,6 +61,7 @@ export type PartnerResponse = {
   otherSectorName: string | null;
   rank: PartnerRank | null;
   otherRank: string | null;
+  tags: string[];
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

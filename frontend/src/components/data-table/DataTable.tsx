@@ -198,7 +198,7 @@ export function DataTable<TData extends DefaultData, TValue>({
       )}
 
       {isMedium && (
-        <div className="rounded-md border">
+        <div className="rounded-md border-2 overflow-hidden">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -210,9 +210,9 @@ export function DataTable<TData extends DefaultData, TValue>({
                       <TableHead
                         key={header.id}
                         className={cn(
-                          "border-l border-r dark:border-gray-700 whitespace-nowrap",
+                          "border-r dark:border-gray-700 whitespace-nowrap",
                           fixed
-                            ? "sticky right-0 bg-background shadow-md hover:bg-muted/50"
+                            ? "sticky right-0 bg-background drop-shadow-md dark:drop-shadow-border dark:drop-shadow-md hover:bg-muted/50"
                             : ""
                         )}
                         style={{
@@ -253,9 +253,9 @@ export function DataTable<TData extends DefaultData, TValue>({
                           <TableCell
                             key={cell.id}
                             className={cn(
-                              "border-l border-r dark:border-gray-700",
+                              "border-r dark:border-gray-700",
                               fixed
-                                ? "sticky right-0 bg-background shadow-md"
+                                ? "sticky right-0 bg-background drop-shadow-md dark:drop-shadow-border dark:drop-shadow-md"
                                 : ""
                             )}
                             style={{

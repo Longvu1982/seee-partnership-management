@@ -22,5 +22,6 @@ declare module "@tanstack/table-core" {
     onActiveStateChange: (data: TData, value: boolean) => Promise<A>;
     onViewContactlist: (data: TData) => A;
     onViewDocuments: (data: TData) => A;
+    onViewPanel: (data: TData) => void;
   }
 }

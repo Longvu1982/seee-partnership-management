@@ -20,6 +20,7 @@ interface PanelProps {
   children: ReactNode;
   title: string;
   description?: string;
+  footer?: ReactNode;
 }
 const Panel: FC<PanelProps> = ({
   open,
@@ -29,6 +30,7 @@ const Panel: FC<PanelProps> = ({
   formId,
   title,
   description,
+  footer,
 }) => {
   return (
     <Drawer
@@ -59,16 +61,22 @@ const Panel: FC<PanelProps> = ({
           </DrawerClose>
         </DrawerHeader>
         <div className="overflow-y-auto flex-1">{children}</div>
-        <DrawerFooter className="flex items-center flex-row justify-end">
-          <DrawerClose asChild>
-            <Button variant="outline" onClick={() => onOpenChange?.(false)}>
-              Quay lại
+        {footer ? (
+          <DrawerFooter className="flex items-center flex-row justify-end">
+            {footer}
+          </DrawerFooter>
+        ) : (
+          <DrawerFooter className="flex items-center flex-row justify-end">
+            <DrawerClose asChild>
+              <Button variant="outline" onClick={() => onOpenChange?.(false)}>
+                Quay lại
+              </Button>
+            </DrawerClose>
+            <Button form={formId} type="submit">
+              Áp dụng
             </Button>
-          </DrawerClose>
-          <Button form={formId} type="submit">
-            Áp dụng
-          </Button>
-        </DrawerFooter>
+          </DrawerFooter>
+        )}
       </DrawerContent>
     </Drawer>
   );

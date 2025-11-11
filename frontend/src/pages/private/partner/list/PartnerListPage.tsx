@@ -27,6 +27,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import PartnerPanel, { initFormValues, schema } from "./panel/PartnerPanel";
+import PartnerViewPanel from "./panel/PartnerViewPanel";
 import {
   getPartnerRankIcon,
   getPartnerRankLabel,
@@ -68,9 +69,16 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
     accessorKey: "name",
     header: "Tên đối tác",
-    cell: ({ getValue }) => (
-      <span className="block min-w-[100px]">{getValue() as string}</span>
-    ),
+    cell: ({ getValue, table, row }) => {
+      return (
+        <span
+          className="hover:underline text-primary font-semibold min-w-[100px] block line-clamp-2 cursor-pointer"
+          onClick={() => table.options.meta?.onViewPanel?.(row.original)}
+        >
+          {getValue() as string}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "address",
@@ -79,6 +87,7 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
     accessorKey: "sector",
     header: "Lĩnh vực",
+    size: 200,
     cell: ({ getValue, row }) => {
       const sectors = (getValue() as PartnerSector[]) ?? [];
       return (
@@ -135,6 +144,7 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
   {
     accessorKey: "partnerContacts",
     header: "Liên Hệ",
+    size: 200,
     cell: ({ row, table }) => {
       const contacts = (row.original.partnerContacts ?? []).map(
         (p) => p.contact
@@ -192,6 +202,9 @@ const PartnerListPage = () => {
     isOpen: boolean;
     type: "create" | "edit";
   }>({ isOpen: false, type: "create" });
+  const [viewPanelData, setViewPanelData] = useState<PartnerResponse | null>(
+    null
+  );
 
   const { triggerLoading } = useTriggerLoading();
   const { openContactListModal } = useContactListModal();
@@ -259,6 +272,10 @@ const PartnerListPage = () => {
     });
   };
 
+  const handleOpenViewPanel = (partner: PartnerResponse) => {
+    setViewPanelData(partner);
+  };
+
   const { onPaginationChange } = usePagination({
     queryParams,
     fetchData: getPartnerList,
@@ -300,7 +317,12 @@ const PartnerListPage = () => {
           manualPagination
           pagination={queryParams.pagination}
           onPaginationChange={onPaginationChange}
-          meta={{ onEditClick, onActiveStateChange, onViewContactlist }}
+          meta={{
+            onEditClick,
+            onActiveStateChange,
+            onViewContactlist,
+            onViewPanel: handleOpenViewPanel,
+          }}
         />
       </div>
 
@@ -311,6 +333,12 @@ const PartnerListPage = () => {
           setPanelState((prev) => ({ ...prev, isOpen: value }))
         }
         onSubmit={onCreateUpdate}
+      />
+
+      <PartnerViewPanel
+        partner={viewPanelData}
+        open={!!viewPanelData}
+        onClose={() => setViewPanelData(null)}
       />
     </>
   );
