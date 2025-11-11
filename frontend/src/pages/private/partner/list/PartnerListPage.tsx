@@ -9,11 +9,19 @@ import { usePagination } from "@/hooks/use-pagination";
 import { useTriggerLoading } from "@/hooks/use-trigger-loading";
 import {
   apiCreatePartner,
+  apiDeletePartner,
   apiListPartners,
   apiUpdatePartner,
   apiUpdatePartnerStatus,
 } from "@/services/main/partnerServices";
-import { PartnerRank, PartnerSector, PartnerType } from "@/types/enum/app-enum";
+import {
+  PartnerRank,
+  PartnerSector,
+  PartnerType,
+  Role,
+} from "@/types/enum/app-enum";
+import useAuthStore from "@/store/auth";
+import { useGlobalModal } from "@/store/global-modal";
 import {
   initQueryParams,
   type PartnerFormValues,
@@ -175,19 +183,28 @@ const columns: EnhancedColumnDef<PartnerResponse>[] = [
     size: 120,
     enableResizing: false,
     cell: ({ row, table }) => {
-      const onEditClick = (table.options.meta as A)?.onEditClick;
+      const { isAdmin, onEditClick, onDeleteClick } = table.options.meta ?? {};
+
       return (
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="icon"
-            onClick={() => onEditClick(row.original)}
+            onClick={() => onEditClick?.(row.original)}
+            className=""
           >
             <Edit />
           </Button>
-          <Button variant="outline" size="icon">
-            <Trash className="text-red-500" />
-          </Button>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onDeleteClick?.(row.original)}
+              className="hover:bg-red-600! text-red-500 hover:text-white!"
+            >
+              <Trash />
+            </Button>
+          )}
         </div>
       );
     },
@@ -208,6 +225,9 @@ const PartnerListPage = () => {
 
   const { triggerLoading } = useTriggerLoading();
   const { openContactListModal } = useContactListModal();
+  const { openConfirmModal } = useGlobalModal();
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role === Role.ADMIN;
 
   const form = useForm<PartnerFormValues>({
     resolver: zodResolver(schema),
@@ -276,6 +296,27 @@ const PartnerListPage = () => {
     setViewPanelData(partner);
   };
 
+  const onDeleteClick = (partner: PartnerResponse) => {
+    console.log("here");
+    openConfirmModal({
+      title: "Xác nhận xóa đối tác",
+      content: `Bạn có chắc chắn muốn xóa đối tác "${partner.name}"? Hành động này không thể hoàn tác.`,
+      confirmText: "Xóa",
+      cancelText: "Hủy",
+      confirmType: "alert",
+      onConfirm: async (closeModal) => {
+        await triggerLoading(async () => {
+          const { data } = await apiDeletePartner(partner.id);
+          if (data.success) {
+            toast.success("Xóa đối tác thành công");
+            await getPartnerList(queryParams);
+            closeModal();
+          }
+        });
+      },
+    });
+  };
+
   const { onPaginationChange } = usePagination({
     queryParams,
     fetchData: getPartnerList,
@@ -322,6 +363,8 @@ const PartnerListPage = () => {
             onActiveStateChange,
             onViewContactlist,
             onViewPanel: handleOpenViewPanel,
+            onDeleteClick,
+            isAdmin,
           }}
         />
       </div>

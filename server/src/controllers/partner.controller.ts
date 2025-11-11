@@ -34,6 +34,16 @@ export const updatePartnerStatus = async (request: Request, response: Response, 
   }
 };
 
+export const deletePartner = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { id } = request.params;
+    const partner = await PartnerService.deletePartner(id);
+    return sendSuccessResponse(response, partner);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const listPartners = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const query = request.body;

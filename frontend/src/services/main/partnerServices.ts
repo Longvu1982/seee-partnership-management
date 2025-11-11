@@ -49,3 +49,12 @@ export async function apiUpdatePartnerStatus(
     data: { isActive },
   });
 }
+
+export async function apiDeletePartner(
+  id: string
+): Promise<AxiosResponse<PartnerUpdateResponse>> {
+  return ApiService.fetchData<PartnerUpdateResponse>({
+    url: `/partner/${id}`,
+    method: "delete",
+  });
+}

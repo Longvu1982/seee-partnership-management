@@ -23,5 +23,8 @@ declare module "@tanstack/table-core" {
     onViewContactlist: (data: TData) => A;
     onViewDocuments: (data: TData) => A;
     onViewPanel: (data: TData) => void;
+    onEditClick: (data: TData) => void;
+    onDeleteClick: (data: TData) => void;
+    isAdmin: boolean;
   }
 }

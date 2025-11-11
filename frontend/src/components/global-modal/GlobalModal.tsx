@@ -34,8 +34,10 @@ export default function GlobalModal() {
             <AlertDialogAction
               onClick={() => onConfirm?.(() => setOpen(false, modalType))}
               className={cn(
-                meta.confirmType === "warning" && "bg-yellow-500",
-                meta.confirmType === "alert" && "bg-red-600"
+                meta.confirmType === "warning" &&
+                  "bg-yellow-500 hover:bg-yellow-500/90 cursor-pointer",
+                meta.confirmType === "alert" &&
+                  "bg-red-600 hover:bg-red-600/90 cursor-pointer"
               )}
             >
               {meta.confirmText}

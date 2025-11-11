@@ -35,6 +35,12 @@ export const updatePartnerStatus = async (id: string, isActive: boolean): Promis
   });
 };
 
+export const deletePartner = async (id: string): Promise<Partner> => {
+  return db.partner.delete({
+    where: { id },
+  });
+};
+
 export const listPartners = async (model: QueryDataModel): Promise<{ totalCount: number; partners: Partner[] }> => {
   const { pagination, searchText, sort, filter } = model;
 

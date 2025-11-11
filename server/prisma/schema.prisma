@@ -49,6 +49,7 @@ model Partner {
   otherSectorName String?
   rank            PartnerRank?
   otherRank       String?
+  tags            String[]
 
   userPartners    UserPartner[]
   partnerEvents   PartnerEvent[]
@@ -67,8 +68,8 @@ model UserPartner {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id])
-  partner Partner @relation(fields: [partnerId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
 
   @@unique([userId, partnerId])
 }
@@ -81,8 +82,8 @@ model PartnerEvent {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  partner Partner @relation(fields: [partnerId], references: [id])
-  event   Event   @relation(fields: [eventId], references: [id])
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@unique([partnerId, eventId])
 }
@@ -95,8 +96,8 @@ model EventContact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  event   Event   @relation(fields: [eventId], references: [id])
-  contact Contact @relation(fields: [contactId], references: [id])
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, contactId])
 }
@@ -109,8 +110,8 @@ model PartnerContact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  partner Partner @relation(fields: [partnerId], references: [id])
-  contact Contact @relation(fields: [contactId], references: [id])
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
 
   @@unique([partnerId, contactId])
 }
@@ -131,7 +132,7 @@ model Event {
   rating                Int?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   partnerEvents PartnerEvent[]
   eventContacts EventContact[]

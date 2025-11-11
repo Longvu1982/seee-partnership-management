@@ -8,7 +8,16 @@ export type TloginRequest = Pick<User, 'username' | 'password'>;
 // _____________  Partner Types  _____________
 export type TPartnerCreate = Pick<
   Partner,
-  'name' | 'description' | 'address' | 'type' | 'sector' | 'otherTypeName' | 'otherSectorName' | 'rank' | 'otherRank'
+  | 'name'
+  | 'description'
+  | 'address'
+  | 'type'
+  | 'sector'
+  | 'otherTypeName'
+  | 'otherSectorName'
+  | 'rank'
+  | 'otherRank'
+  | 'tags'
 > & {
   contactIds: string[];
 };
@@ -25,6 +34,7 @@ export type TPartnerUpdate = Partial<
     | 'rank'
     | 'otherRank'
     | 'isActive'
+    | 'tags'
   >
 > & {
   contactIds: string[];
