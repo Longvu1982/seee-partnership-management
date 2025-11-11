@@ -25,6 +25,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { getEventStatusBadge } from "../list/event.utils";
+import {
+  getPartnerSectorLabel,
+  getPartnerTypeLabel,
+} from "@/pages/private/partner/list/partner.utils";
+import { PartnerSector, PartnerType } from "@/types/enum/app-enum";
 
 function StarRating({
   rating,
@@ -402,13 +407,26 @@ const EventDetailPage = () => {
                     {pe.partner.type && (
                       <p>
                         <span className="font-medium">Loại:</span>{" "}
-                        {pe.partner.type}
+                        {pe.partner.type === PartnerType.OTHER
+                          ? pe.partner.otherTypeName ||
+                            getPartnerTypeLabel(pe.partner.type)
+                          : getPartnerTypeLabel(pe.partner.type)}
                       </p>
                     )}
-                    {pe.partner.sector && (
+                    {pe.partner.sector && pe.partner.sector.length > 0 && (
                       <p>
                         <span className="font-medium">Lĩnh vực:</span>{" "}
-                        {pe.partner.sector}
+                        {pe.partner.sector
+                          .map((s) => {
+                            if (s === PartnerSector.OTHERS) {
+                              return (
+                                pe.partner.otherSectorName ||
+                                getPartnerSectorLabel(s)
+                              );
+                            }
+                            return getPartnerSectorLabel(s);
+                          })
+                          .join(", ")}
                       </p>
                     )}
                     {pe.partner.address && (

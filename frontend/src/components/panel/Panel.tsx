@@ -43,7 +43,7 @@ const Panel: FC<PanelProps> = ({
       {trigger && <DrawerTrigger>{trigger}</DrawerTrigger>}
       <DrawerContent
         onInteractOutside={(e) => e.preventDefault()}
-        className="h-full w-[400px] right-0 rounded-t-none"
+        className="h-full w-full! md:w-[400px] right-0 rounded-t-none"
       >
         <DrawerHeader className="flex items-start justify-between">
           <div className="space-y-2">

@@ -76,7 +76,7 @@ const roleOptions = [
 const departmentOptions = [
   { value: Department.ELECTRICAL, label: "Điện" },
   { value: Department.ELECTRONIC, label: "Điện tử" },
-  { value: Department.COMMUNICATION, label: "Kỹ thuật truyền thông" },
+  { value: Department.COMMUNICATION, label: "KT truyền thông" },
   { value: Department.AUTOMATION, label: "Tự động hóa" },
   { value: Department.SCHOOLOFFICE, label: "Văn phòng trường" },
 ];
@@ -174,7 +174,6 @@ const UserPanel = ({
                 <FormControl>
                   <Input
                     autoComplete="off"
-                    type="password"
                     placeholder={
                       panelState.type === "create"
                         ? "Nhập mật khẩu"
@@ -198,8 +197,6 @@ const UserPanel = ({
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    autoComplete="email"
-                    type="email"
                     placeholder="Nhập email"
                     {...field}
                     value={field.value || ""}
@@ -229,61 +226,63 @@ const UserPanel = ({
             )}
           />
 
-          {/* Role */}
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Vai trò <span className="text-red-500">*</span>
-                </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn vai trò" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {roleOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-2">
+            {/* Role */}
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>
+                    Vai trò <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Chọn vai trò" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {roleOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Department */}
-          <FormField
-            control={form.control}
-            name="department"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Khoa <span className="text-red-500">*</span>
-                </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn khoa" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {departmentOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            {/* Department */}
+            <FormField
+              control={form.control}
+              name="department"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>
+                    Khoa <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Chọn khoa" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {departmentOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Active Status */}
           <FormField

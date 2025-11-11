@@ -34,7 +34,7 @@ const getDepartmentLabel = (dept: Department) => {
   const labels = {
     [Department.ELECTRICAL]: "Điện",
     [Department.ELECTRONIC]: "Điện tử",
-    [Department.COMMUNICATION]: "Kỹ thuật truyền thông",
+    [Department.COMMUNICATION]: "KT truyền thông",
     [Department.AUTOMATION]: "Tự động hóa",
     [Department.SCHOOLOFFICE]: "Văn phòng trường",
   };
@@ -297,7 +297,6 @@ const AccountPage = () => {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
-                          type="email"
                           placeholder="Nhập email"
                           {...field}
                           value={field.value || ""}
@@ -361,8 +360,7 @@ const AccountPage = () => {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                autoComplete="new-password"
-                                type="password"
+                                autoComplete="off"
                                 placeholder="Nhập mật khẩu hiện tại"
                                 {...field}
                               />
@@ -384,8 +382,7 @@ const AccountPage = () => {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                autoComplete="new-password"
-                                type="password"
+                                autoComplete="off"
                                 placeholder="Nhập mật khẩu mới"
                                 {...field}
                                 value={field.value || ""}
@@ -408,8 +405,7 @@ const AccountPage = () => {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                autoComplete="new-password"
-                                type="password"
+                                autoComplete="off"
                                 placeholder="Nhập lại mật khẩu mới"
                                 {...field}
                                 value={field.value || ""}

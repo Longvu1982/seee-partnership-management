@@ -203,7 +203,7 @@ export function DataTable<TData extends DefaultData, TValue>({
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
+                  {headerGroup.headers.map((header, index) => {
                     const fixed = (header.column.columnDef as A)
                       .fixed as boolean;
                     return (
@@ -211,6 +211,8 @@ export function DataTable<TData extends DefaultData, TValue>({
                         key={header.id}
                         className={cn(
                           "border-r dark:border-gray-700 whitespace-nowrap",
+                          index === headerGroup.headers.length - 1 &&
+                            "border-r-0",
                           fixed
                             ? "sticky right-0 bg-background drop-shadow-md dark:drop-shadow-border dark:drop-shadow-md hover:bg-muted/50"
                             : ""
@@ -246,7 +248,7 @@ export function DataTable<TData extends DefaultData, TValue>({
                           "animate-blink"
                       )}
                     >
-                      {row.getVisibleCells().map((cell) => {
+                      {row.getVisibleCells().map((cell, rowIndex) => {
                         const fixed = (cell.column.columnDef as A)
                           .fixed as boolean;
                         return (
@@ -254,6 +256,8 @@ export function DataTable<TData extends DefaultData, TValue>({
                             key={cell.id}
                             className={cn(
                               "border-r dark:border-gray-700",
+                              rowIndex === row.getVisibleCells().length - 1 &&
+                                "border-r-0",
                               fixed
                                 ? "sticky right-0 bg-background drop-shadow-md dark:drop-shadow-border dark:drop-shadow-md"
                                 : ""

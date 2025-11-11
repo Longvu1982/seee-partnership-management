@@ -33,7 +33,7 @@ const getDepartmentLabel = (dept: Department) => {
   const labels = {
     [Department.ELECTRICAL]: "Điện",
     [Department.ELECTRONIC]: "Điện tử",
-    [Department.COMMUNICATION]: "Kỹ thuật truyền thông",
+    [Department.COMMUNICATION]: "KT truyền thông",
     [Department.AUTOMATION]: "Tự động hóa",
     [Department.SCHOOLOFFICE]: "Văn phòng trường",
   };
