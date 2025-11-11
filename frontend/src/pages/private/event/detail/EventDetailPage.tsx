@@ -454,25 +454,25 @@ const EventDetailPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-muted-foreground">ID sự kiện</p>
-            <p className="text-card-foreground font-mono text-xs break-all">
+            <p className="text-card-foreground text-xs break-all">
               {eventData.id}
             </p>
           </div>
           <div>
             <p className="text-muted-foreground">Người tạo sự kiện</p>
-            <p className="text-card-foreground font-mono text-xs break-all">
+            <p className="text-card-foreground text-xs break-all">
               {eventData.user?.name}
             </p>
           </div>
           <div>
             <p className="text-muted-foreground">Tạo lúc</p>
-            <p className="text-card-foreground">
+            <p className="text-card-foreground text-xs">
               {formatDateTime(eventData.createdAt)}
             </p>
           </div>
           <div>
             <p className="text-muted-foreground">Cập nhật lúc</p>
-            <p className="text-card-foreground">
+            <p className="text-card-foreground text-xs">
               {formatDateTime(eventData.updatedAt)}
             </p>
           </div>

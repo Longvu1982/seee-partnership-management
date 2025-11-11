@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -116,8 +117,9 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  body, html {
     @apply bg-background text-foreground;
+    font-family: 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, system-ui, sans-serif;
   }
   html {
     @apply scrollbar-thin dark:scrollbar-track-slate-800 dark:scrollbar-thumb-slate-400;
