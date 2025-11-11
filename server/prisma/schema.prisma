@@ -12,19 +12,20 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  username     String        @unique
-  password     String
-  name         String
-  email        String?
-  phone        String?
-  role         Role          @default(USER)
-  department   Department    @default(SCHOOLOFFICE)
-  events       Event[]
-  userPartners UserPartner[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  isActive     Boolean       @default(true)
+  id                 String        @id @default(uuid())
+  username           String        @unique
+  password           String
+  name               String
+  email              String?
+  phone              String?
+  role               Role          @default(USER)
+  department         Department    @default(SCHOOLOFFICE)
+  hasPasswordChanged Boolean       @default(false)
+  events             Event[]
+  userPartners       UserPartner[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  isActive           Boolean       @default(true)
 }
 
 model Contact {

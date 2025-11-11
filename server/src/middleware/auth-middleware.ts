@@ -2,8 +2,9 @@ import { Role } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import * as UserService from '../services/user.service';
 import { TloginRead } from '../types/general';
+import HttpStatusCode from '../utils/HttpStatusCode';
 import { verifyToken } from '../utils/jwtHandler';
-import { sendBadRequestResponse, sendForbiddenResponse } from '../utils/responseHandler';
+import { sendBadRequestResponse, sendForbiddenResponse, sendUnauthorizedResponse } from '../utils/responseHandler';
 
 const protectAuth = async (request: Request, response: Response, next: NextFunction) => {
   const allCookies = request.cookies;
@@ -18,13 +19,36 @@ const protectAuth = async (request: Request, response: Response, next: NextFunct
     const user: TloginRead | null = await UserService.getUserByID(decoded.id);
 
     if (!user) {
-      next();
       return sendBadRequestResponse(response, 'Vui lòng đăng nhập');
     }
 
-    request.user = {
-      ...user,
-    };
+    if (!user.isActive) {
+      response.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+      });
+
+      return sendUnauthorizedResponse(
+        response,
+        'Tài khoản đã bị tạm ngưng. Vui lòng liên hệ quản trị viên.',
+        HttpStatusCode.NOT_ACCEPTABLE
+      );
+    }
+
+    if (user.hasPasswordChanged) {
+      response.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+      });
+
+      return sendUnauthorizedResponse(
+        response,
+        'Mật khẩu đã hết hạn. Vui lòng đăng nhập lại.',
+        HttpStatusCode.NOT_ACCEPTABLE
+      );
+    }
+
+    request.user = { ...user };
     next();
   } catch (error: any) {
     next(error);

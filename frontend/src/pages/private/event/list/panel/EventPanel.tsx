@@ -93,7 +93,6 @@ const EventPanel = ({
   );
 
   const handleCurrencySelect = (currency: Currency) => {
-    console.log("Selected Currency Object:", currency);
     setSelectedCurrency(currency);
   };
 

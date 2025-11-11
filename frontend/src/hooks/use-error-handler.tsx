@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -6,8 +5,6 @@ export const useErrorHandler = () => {
   const catchError = (error: A) => {
     let message = error?.response?.data?.error?.message;
     if (typeof message === "object") message = "Lỗi bất định hoặc lỗi server";
-
-    if (error instanceof AxiosError) message = "Lỗi bất định hoặc lỗi server";
 
     message = message ?? error?.message;
 

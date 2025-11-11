@@ -1,4 +1,6 @@
+import useAuthStore from "@/store/auth";
 import axios, { AxiosError } from "axios";
+import { HttpStatusCode } from "@/types/enum/app-enum";
 
 const BaseService = axios.create({
   timeout: 60000,
@@ -16,6 +18,10 @@ BaseService.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
+    console.log(error);
+    if (error.response?.status === HttpStatusCode.NOT_ACCEPTABLE) {
+      useAuthStore.getState().logout();
+    }
     return Promise.reject(error);
   }
 );

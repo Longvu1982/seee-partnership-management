@@ -1,6 +1,7 @@
 import type {
   EventStatus,
   Role,
+  Department,
   PartnerRank,
   PartnerSector,
   PartnerType,
@@ -31,9 +32,12 @@ export const initQueryParams: QueryDataModel = {
 export type UserResponse = {
   id: string;
   name: string;
-  email: string;
-  phone: string;
+  email: string | null;
+  phone: string | null;
   role: Role;
+  department: Department;
+  isActive: boolean;
+  hasPasswordChanged: boolean;
   createdAt: string;
   updatedAt: string;
   username: string;
@@ -129,6 +133,11 @@ export type ContactFormValues = Omit<
   ContactResponse,
   "id" | "createdAt" | "updatedAt"
 > & { id?: string };
+
+export type UserFormValues = Omit<
+  UserResponse,
+  "id" | "createdAt" | "updatedAt" | "hasPasswordChanged"
+> & { id?: string; password?: string };
 export type ContactCreateResponse = ApiResponse<ContactResponse>;
 export type ContactUpdateResponse = ApiResponse<ContactResponse>;
 

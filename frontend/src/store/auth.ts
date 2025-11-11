@@ -1,4 +1,4 @@
-import type { Role } from "@/types/enum/app-enum";
+import type { Department, Role } from "@/types/enum/app-enum";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -9,6 +9,7 @@ interface UserAuth {
   email?: string;
   phone?: string;
   role: Role;
+  department: Department;
 }
 
 type AuthStoreType = {

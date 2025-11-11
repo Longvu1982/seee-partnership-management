@@ -6,6 +6,7 @@ import { partnerRoutes } from "./routes/partner.routers";
 import { eventRoutes } from "./routes/event.routers";
 import { contactRoutes } from "./routes/contact.routers";
 import { userRoutes } from "./routes/user.routers";
+import { accountRoutes } from "./routes/account.routers";
 
 export const useRouter = () => {
   const user = useAuthStore((s) => s.user);
@@ -33,6 +34,7 @@ export const useRouter = () => {
         ...eventRoutes,
         ...contactRoutes,
         ...userRoutes,
+        ...accountRoutes,
       ]),
     },
   ]);

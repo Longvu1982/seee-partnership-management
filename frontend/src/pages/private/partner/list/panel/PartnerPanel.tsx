@@ -104,9 +104,7 @@ const PartnerPanel = ({
       <Form {...form}>
         <form
           id="partnerForm"
-          onSubmit={form.handleSubmit(onSubmit, (e) => {
-            console.log(e);
-          })}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6 p-4"
         >
           <FormField

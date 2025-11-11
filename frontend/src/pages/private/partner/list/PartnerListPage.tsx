@@ -297,7 +297,6 @@ const PartnerListPage = () => {
   };
 
   const onDeleteClick = (partner: PartnerResponse) => {
-    console.log("here");
     openConfirmModal({
       title: "Xác nhận xóa đối tác",
       content: `Bạn có chắc chắn muốn xóa đối tác "${partner.name}"? Hành động này không thể hoàn tác.`,

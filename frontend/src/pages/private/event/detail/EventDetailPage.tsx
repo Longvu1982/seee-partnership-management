@@ -118,7 +118,7 @@ const EventDetailPage = () => {
   if (!eventData.id) return <></>;
 
   return (
-    <div className="px-0 md:px-2 pt-0 pb-12">
+    <div className="px-0 md:px-2 pt-0 pb-12 container mx-auto max-w-6xl">
       {/* Header Section */}
       <div className="mb-12">
         <div className="flex items-start justify-between gap-4 mb-10">
@@ -131,7 +131,7 @@ const EventDetailPage = () => {
             >
               <ArrowLeft /> Quay lại danh sách
             </Button>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">
               {eventData.title}
             </h1>
             <div className="flex items-center gap-3">
@@ -168,7 +168,7 @@ const EventDetailPage = () => {
 
         {/* Event Description */}
         <div className="p-6  rounded-lg border border-border">
-          <h2 className="text-2xl font-bold text-foreground mb-2">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">
             Mô tả sự kiện
           </h2>
           <p className="text-sm text-card-foreground leading-relaxed">
@@ -186,7 +186,7 @@ const EventDetailPage = () => {
               Sinh viên (Dự kiến)
             </span>
           </div>
-          <p className="text-2xl font-bold text-card-foreground">
+          <p className="text-2xl font-semibold text-card-foreground">
             {eventData.student_reach_planned}
           </p>
         </div>
@@ -197,7 +197,7 @@ const EventDetailPage = () => {
               Sinh viên (Thực tế)
             </span>
           </div>
-          <p className="text-2xl font-bold text-card-foreground">
+          <p className="text-2xl font-semibold text-card-foreground">
             {eventData.student_reach_actual}
           </p>
         </div>
@@ -208,7 +208,7 @@ const EventDetailPage = () => {
               Kinh phí
             </span>
           </div>
-          <p className="text-2xl font-bold text-card-foreground">
+          <p className="text-2xl font-semibold text-card-foreground">
             {formatCurrency(
               eventData.funding_amount,
               eventData.funding_currency
@@ -250,7 +250,7 @@ const EventDetailPage = () => {
       {eventData.documents && eventData.documents.length > 0 && (
         <section className="mb-12">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-foreground mb-2">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">
               Tài liệu
             </h2>
             <p className="text-muted-foreground">
@@ -278,7 +278,7 @@ const EventDetailPage = () => {
       {/* Contacts Section */}
       <section className="mb-12">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-foreground mb-2">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">
             Liên hệ (nhà trường)
           </h2>
           <p className="text-muted-foreground">
@@ -359,7 +359,9 @@ const EventDetailPage = () => {
       {/* Partners Section */}
       <section className="mb-12">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Đối tác</h2>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">
+            Đối tác
+          </h2>
           <p className="text-muted-foreground">
             Các tổ chức hợp tác trong sự kiện này
           </p>

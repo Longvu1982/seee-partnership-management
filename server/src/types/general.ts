@@ -4,6 +4,13 @@ import { Contact, Event, Partner, User } from '@prisma/client';
 export type TUserRegisterWrite = Omit<User, 'createdAt' | 'updatedAt'>;
 export type TloginRead = Omit<User, 'password'>;
 export type TloginRequest = Pick<User, 'username' | 'password'>;
+export type TUserCreate = Pick<
+  User,
+  'name' | 'username' | 'password' | 'email' | 'phone' | 'role' | 'department' | 'isActive'
+>;
+export type TUserUpdate = Partial<
+  Pick<User, 'name' | 'password' | 'email' | 'phone' | 'role' | 'department' | 'isActive' | 'hasPasswordChanged'>
+> & { currentPassword?: string };
 
 // _____________  Partner Types  _____________
 export type TPartnerCreate = Pick<

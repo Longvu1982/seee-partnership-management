@@ -47,7 +47,7 @@ export default function AvatarMenu() {
           onClick={() => navigate("/account")}
           className="cursor-pointer"
         >
-          Quản lý tài khoản
+          Tài khoản của tôi
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">

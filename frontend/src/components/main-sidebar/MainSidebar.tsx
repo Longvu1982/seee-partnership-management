@@ -28,14 +28,14 @@ const menus: TMenuItem[] = [
   },
   {
     type: "single",
-    title: "Danh sách tài khoản",
+    title: "Quản lý người dùng",
     role: [Role.ADMIN],
     link: "/user-list",
     level: 1,
   },
   {
     type: "single",
-    title: "Quản lý tài khoản",
+    title: "Tài khoản của tôi",
     role: [],
     link: "/account",
     level: 1,

@@ -14,9 +14,16 @@ export const login = async (request: Request, response: Response, next: NextFunc
       return sendUnauthorizedResponse(response, 'Username không tồn tại.');
     }
 
+    if (!user.isActive) {
+      return sendUnauthorizedResponse(response, 'Tài khoản đã bị tạm ngưng. Vui lòng liên hệ quản trị viên.');
+    }
+
     const passwordCompare = await comparePasswords(userRequest.password, user.password);
 
     if (passwordCompare) {
+      // Reset hasPasswordChanged to false on successful login
+      const updatedUser = await UserService.updateUserPasswordChangedStatus(user.id, false);
+
       const token = generateToken({ id: user.id }, '30d');
 
       response.cookie('jwt', token, {
@@ -26,7 +33,7 @@ export const login = async (request: Request, response: Response, next: NextFunc
         sameSite: 'lax',
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
-      const { password, ...rest } = user;
+      const { password, ...rest } = updatedUser;
       return sendSuccessResponse(response, rest);
     } else {
       return sendUnauthorizedResponse(response, 'Sai username hoặc mật khẩu.');
@@ -39,10 +46,8 @@ export const login = async (request: Request, response: Response, next: NextFunc
 export const authMe = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const user = request.user;
-    if (user) return sendSuccessResponse(response, user);
-    else {
-      return sendUnauthorizedResponse(response, 'Vui lòng đăng nhập lại.');
-    }
+
+    return sendSuccessResponse(response, user);
   } catch (error: any) {
     next(error);
   }

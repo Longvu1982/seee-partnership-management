@@ -26,5 +26,6 @@ declare module "@tanstack/table-core" {
     onEditClick: (data: TData) => void;
     onDeleteClick: (data: TData) => void;
     isAdmin: boolean;
+    currentUserId: string;
   }
 }
